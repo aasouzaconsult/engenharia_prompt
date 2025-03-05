@@ -309,7 +309,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-        // Configuração do Firebase
+        // Configuração do Firebase (substitua pelos seus dados)
         const firebaseConfig = {
             apiKey: "AIzaSyDLYKPCratpfc4C_t5B6ImoEaHs6RixY1c",
             authDomain: "pagina-f081e.firebaseapp.com",
@@ -323,7 +323,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Referência ao documento do contador
+        // Referência ao documento do contador - https://console.firebase.google.com/project/pagina-f081e/firestore/databases/-default-/data/~2Fvisitas~2Fcontador
         const contadorRef = doc(db, "visitas", "contador");
 
         async function atualizarContador() {
