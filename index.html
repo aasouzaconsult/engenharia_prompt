@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engenharia de Prompt - por Alex Souza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        header h1 {
+            font-size: 3em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+        }
+
+        header p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 20px auto;
+            color: #d1d1e9;
+        }
+
+        .accordion {
+            display: grid;
+            gap: 20px;
+        }
+
+        .accordion-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .accordion-header {
+            padding: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #00d4ff, #ff007a);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.8em;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            transition: max-height 0.4s ease;
+            color: #d1d1e9;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: none;
+            padding: 20px;
+        }
+
+        .accordion-content h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .accordion-content ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .accordion-content ul li {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .accordion-content ul li::before {
+            content: '➜';
+            color: #ff007a;
+            position: absolute;
+            left: -20px;
+        }
+
+        .accordion-content strong {
+            color: #fff;
+        }
+
+        .prompt-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0 0 20px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #d1d1e9;
+            box-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
+        }
+
+        .accordion-content a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .accordion-content a:hover {
+            color: #ff007a;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            header p { font-size: 1em; }
+            .accordion-header { font-size: 1.2em; }
+            .prompt-box { font-size: 0.9em; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <img src="https://www.freeiconspng.com/thumbs/command-line-icon/command-line-icon-23.png" 
+                     alt="Ícone de terminal" 
+                     style="width: 60px; height: 60px; vertical-align: middle; margin-right: 10px;">
+                Engenharia de Prompt - por Alex Souza
+            </h1>
+            <p>A Engenharia de Prompt é a arte de conversar com Modelos de Linguagem <a href="llm_list.html" target="_blank">(LLMs)</a> de forma precisa e criativa. Domine essa habilidade para obter respostas mais relevantes e personalizadas, explorando todo o potencial da inteligência artificial em suas mãos!</p>
+        </header>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header">Dicas de Prompts</div>
+                <div class="accordion-content">
+                    <h3>Domine a arte de criar prompts</h3>
+                    <ul>
+                        <li><strong>Persona (Prompting com Role Playing):</strong> Pense em quem você quer que a IA seja ao responder. Pode ser um especialista, um recrutador, um escritor, um profissional de dados ou até mesmo um personagem fictício. Atribua um papel à IA para que ela possa gerar respostas mais personalizadas e contextualmente relevantes.<br>
+                            <div class="prompt-box">Você é um especialista em análise de dados e trabalha no setor financeiro de bigtechs...</div>
+                            <div class="prompt-box">Você é um professor de história do ensino fundamental. Crie uma atividade para ensinar sobre a Segunda Guerra Mundial, utilizando uma linha do tempo interativa e jogos de simulação.</div>
+                        </li>
+                        <li><strong>Clear Instructions:</strong> Gere instruções claras e seja específico, forneça mais detalhes (ela (IA) não sabe o que você tá precisando). Seja claro sobre qual é o seu objetivo final. Comece sua pergunta com um verbo de ação, como “gerar”, “dar”, “escrever” ou “analisar”.<br>
+                            <div class="prompt-box">Escreva um resumo do relatório de vendas trimestrais. Um exemplo se encontra abaixo...</div>
+                            <div class="prompt-box">Crie um plano de aula interativo sobre o ciclo da água para alunos do 5º ano, incluindo um quiz e uma simulação online.</div>
+                        </li>
+                        <li><strong>Formato:</strong> Visualize como você deseja que a resposta seja formatada. Pode ser uma lista, um e-mail, um resumo ou qualquer formato que você precise. Ou ainda, o tamanho da mensagem de retorno...<br>
+                            <div class="prompt-box">Forneça as informações em formato de lista com marcadores.</div>
+                            <div class="prompt-box">Gere um quiz de 10 perguntas sobre a Guerra Civil Americana no formato Google Forms, com opções de múltipla escolha e feedback personalizado para cada resposta.</div>
+                        </li>
+                        <li><strong>Contexto (Limit the scope):</strong> O contexto é fundamental para restringir as possibilidades. Forneça informações sobre o histórico do usuário, o que define o sucesso e o ambiente em que estão.<br>
+                            <div class="prompt-box">Você é um analista de dados e tem um cliente que deseja minimizar custos.</div>
+                            <div class="prompt-box">Considerando a teoria de aprendizagem construtivista de Piaget, desenvolva uma atividade prática para ensinar o conceito de frações a alunos do 3º ano, utilizando materiais do cotidiano.</div>
+                        </li>
+                        <li><strong>Exemplos (Few-Shot Prompts):</strong> Incluir exemplos na sua pergunta é uma prática recomendada. Exemplos tornam mais fácil para a IA entender o que você deseja.<br>
+                            <div class="prompt-box">Dê um KPI relacionado ao setor financeiro referente a margem bruta por semana e que seja rápido de implementar...</div>
+                            <div class="prompt-box">Crie um roteiro para um vídeo explicativo sobre a Revolução Francesa, similar ao estilo do canal History Channel, com destaque para as principais causas e consequências do evento.</div>
+                        </li>
+                        <li><strong>Tom:</strong> O tom da resposta é importante. Você pode pedir um tom formal, casual, entusiástico ou até pessimista.<br>
+                            <div class="prompt-box">Forneça as informações em formato de lista com marcadores, escreva com um tom motivador e entusiasmado!</div>
+                        </li>
+                        <li><strong>O que NÃO fazer:</strong> Além de colocar o que quer que a LLM faça, você pode colocar o que ela <strong>NÃO faça</strong>.<br>
+                            <div class="prompt-box">Explique a teoria da relatividade de forma simples, sem usar termos técnicos avançados. Não inclua equações matemáticas na explicação.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">Estilos de Prompts</div>
+                <div class="accordion-content">
+                    <h3>Explore diferentes abordagens</h3>
+                    <ul>
+                        <li><strong>Prompting com Restrições:</strong> Impeça a IA de seguir caminhos óbvios, incentivando-a a encontrar soluções criativas.<br>
+                            <div class="prompt-box">Explique o conceito de inovação sem usar as palavras 'criatividade', 'tecnologia' ou 'novidade'. Utilize uma analogia incomum para tornar o conceito mais claro.</div>
+                        </li>
+                        <li><strong>Prompting com Múltiplos Formatos:</strong> Solicite diferentes formatos de saída para estimular a IA a gerar conteúdo diversificado e completo.<br>
+                            <div class="prompt-box">Explique o conceito de redes neurais artificiais de três formas diferentes: 1️⃣ Em um parágrafo técnico para especialistas. 2️⃣ Como uma metáfora acessível para iniciantes. 3️⃣ No formato de um pequeno diálogo entre um professor e um aluno.</div>
+                            <div class="prompt-box">Crie um material didático sobre o sistema solar, incluindo um texto explicativo, um infográfico e uma apresentação em slides. Utilize linguagem clara e objetiva, adequada para alunos do 6º ano.</div>
+                        </li>
+                        <li><strong>Prompting com Feedback Iterativo:</strong> Refinar o prompt com base no feedback da IA permite obter resultados cada vez mais precisos.<br>
+                            <div class="prompt-box">Explique o que é aprendizado de máquina para alguém que nunca ouviu falar sobre o assunto.</div>
+                            <div class="prompt-box">Reescreva a explicação de aprendizado de máquina, tornando-a mais acessível e utilizando um exemplo do cotidiano.</div>
+                        </li>
+                        <li><strong>Prompting com Hierarquia:</strong> Organize a informação de forma hierárquica para facilitar a compreensão e a visualização.<br>
+                            <div class="prompt-box">Crie um mapa mental sobre a evolução dos computadores, começando com os primeiros computadores eletrônicos e terminando nos computadores modernos. Utilize no máximo três níveis de hierarquia.</div>
+                        </li>
+                        <li><strong>Prompting com Analogias:</strong> Utilizar analogias facilita a compreensão de conceitos complexos.<br>
+                            <div class="prompt-box">Explique o conceito de fração utilizando a analogia de uma pizza. Crie um exemplo prático para ilustrar o conceito.</div>
+                        </li>
+                        <li><strong>Prompting com Metáforas:</strong> As metáforas ajudam a criar conexões entre ideias aparentemente distintas.<br>
+                            <div class="prompt-box">A mente humana é como um computador. Crie uma metáfora para explicar como a memória funciona.</div>
+                        </li>
+                        <li><strong>Prompting com Storytelling:</strong> As histórias são uma forma eficaz de transmitir informações e engajar o público.<br>
+                            <div class="prompt-box">Crie uma história para explicar o ciclo da água, utilizando personagens animais e elementos da natureza.</div>
+                        </li>
+                        <li><strong>Prompting com Restrições de Tamanho:</strong> Limitar o tamanho da resposta força a IA a sintetizar a informação de forma concisa e objetiva.<br>
+                            <div class="prompt-box">Crie um resumo de cinco frases sobre a Primeira Guerra Mundial, destacando as principais causas e consequências.</div>
+                        </li>
+                        <li><strong>Prompting com Múltiplas Perspectivas:</strong> Estimular a IA a considerar diferentes pontos de vista enriquece a discussão e promove o pensamento crítico.<br>
+                            <div class="prompt-box">Apresente três diferentes perspectivas sobre a Revolução Francesa: a dos nobres, a do clero e a do terceiro estado.</div>
+                        </li>
+                        <li><strong>Prompting com Geradores de Imagens:</strong> Combinar a geração de texto com a geração de imagens permite criar materiais visuais mais atraentes e informativos. (usem o claude.ai para o exemplo abaixo). Veja mais exemplos em <a href="https://aasouzaconsult.github.io/imagensprofissoes_prompts/" target="_blank">Exemplos de Prompts de Imagens</a>.<br>
+*Usem o claude.ai para o exemplo abaixo:
+                            <div class="prompt-box">Crie um infográfico sobre o sistema solar, utilizando o modelo de geração de imagens Stable Diffusion. Inclua informações sobre os planetas, o sol e a lua.</div>
+*Usem o ChatGPT para o exemplo abaixo:
+                            <div class="prompt-box">Gere uma imagem de uma cena realista de uma oficina medieval de ferreiro, com um jovem aprendiz, Théo, martelando uma espada incandescente sobre uma bigorna. O fogo da forja ilumina seu rosto concentrado, com faíscas voando ao redor. Texturas detalhadas do metal, ferramentas e paredes de pedra. Pergaminhos com anotações sobre técnicas de forja estão visíveis nas proximidades, mostrando padrões e observações. A atmosfera é quente e intensa, capturando a essência do artesanato e do aprendizado por meio da experiência.</div>
+                        </li>
+                        <li><strong>Prompting com Dados Estruturados:</strong> Ao fornecer dados estruturados, você auxilia a IA a gerar respostas mais precisas e relevantes.<br>
+                            <div class="prompt-box">Utilizando a tabela periódica dos elementos como base, crie um exercício interativo para alunos do ensino médio identificarem os metais alcalinos e os gases nobres.</div>
+                        </li>
+                        <li><strong>Prompting com Emojis:</strong> Os emojis podem ser utilizados para adicionar um toque de criatividade e tornar os conteúdos mais engajadores.<br>
+                            <div class="prompt-box">Crie uma história curta sobre a importância da água para a vida na Terra, utilizando emojis para representar diferentes elementos ( ☀️ ).</div>
+                        </li>
+                        <li><strong>Prompting com Código:</strong> Ao fornecer exemplos de código, você pode guiar a IA a gerar soluções programáticas mais complexas.<br>
+                            <div class="prompt-box">Gere um código Python para criar um gráfico de barras que compare as populações dos cinco países mais populosos do mundo.</div>
+                            <div class="prompt-box">Implemente um algoritmo de ordenação por bolha (Bubble Sort) em Python, Java e C++. O código deve ser eficiente e incluir comentários explicando cada passo.</div>
+                            <div class="prompt-box">O código abaixo ordena uma lista em Python usando o método Bubble Sort. Otimize-o para reduzir a complexidade computacional e substitua-o por um algoritmo mais eficiente.
+
+  def bubble_sort(arr):
+      n = len(arr)
+      for i in range(n):
+          for j in range(0, n-i-1):
+              if arr[j] > arr[j+1]:
+                  arr[j], arr[j+1] = arr[j+1], arr[j]
+      return arr</div>
+                        </li>
+                        <li><strong>Prompting com Referências:</strong> Ao fornecer referências, você garante a precisão e a confiabilidade das informações geradas pela IA.<br>
+                            <div class="prompt-box">Crie um plano de aula sobre a teoria da evolução de Darwin, citando como referência o livro ‘A Origem das Espécies’.</div>
+                        </li>
+                        <li><strong>Prompting com Estilo Específico:</strong> Ao definir um estilo específico, você pode obter resultados mais criativos e originais.<br>
+                            <div class="prompt-box">Escreva um poema sobre a natureza, utilizando a métrica e a rima características dos sonetos.</div>
+                        </li>
+                        <li><strong>Prompting com Múltiplos Modelos em Cadeia:</strong> Combinar diferentes modelos de IA permite criar conteúdos mais ricos e complexos.<br>
+                            <div class="prompt-box">Primeiro, utilize um modelo de linguagem para gerar um resumo sobre a Revolução Industrial. Em seguida, utilize um modelo de geração de imagens para criar uma ilustração que represente esse resumo.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">Técnicas de Prompts</div>
+                <div class="accordion-content">
+                    <h3>Elevando o nível com métodos avançados</h3>
+                    <ul>
+                        <li><strong>Zero-Shot Prompts:</strong> Quando não é necessário nenhum exemplo, o próprio modelo já pode lhe dar respostas corretas.<br>
+                            <div class="prompt-box">When is Christmas in America?</div>
+                        </li>
+                        <li><strong>Few-Shot Prompts:</strong> Quando você dá um contexto, dá exemplos para que a resposta saia ou seja mais precisa. <a href="https://www.promptingguide.ai/techniques/fewshot" target="_blank">More informations</a> | <a href="https://arxiv.org/pdf/2005.14165" target="_blank">Artigo</a><br>
+                            <div class="prompt-box">What is Alex´s favourite type of foods?</div>
+                            <div class="prompt-box">Alex´s favourite type of foods include: Burgers, Pizza, Fries, Chocolate. What restaurant should I take Alex to in Dubai this weekend?</div>
+                            <div class="prompt-box">Crie um plano de aula sobre a célula, similar ao exemplo abaixo: Exemplo: Plano de aula sobre a célula: Introdução (10 minutos), Atividade prática (30 minutos), Discussão em grupo (20 minutos), Conclusão (10 minutos).</div>
+                        </li>
+                        <li><strong>Chain-of-Thought (CoT) Prompting:</strong> Introduzido em Wei et al. (2022), a solicitação de cadeia de pensamento (CoT) permite recursos de raciocínio complexos por meio de etapas intermediárias de raciocínio. Você pode combiná-lo com solicitações rápidas para obter melhores resultados em tarefas mais complexas que exigem raciocínio antes de responder. <a href="https://arxiv.org/abs/2201.11903" target="_blank">Artigo</a>. Essa é a técnica utilizada nas LLMs que "pensam"! (Exemplo: ChatGPT o1 e o3-mini, DeepSeek)<br>
+                            <div class="prompt-box">Os números ímpares neste grupo somam um número par: 4, 8, 9, 15, 12, 2, 1.
+R: Somando todos os números ímpares (9, 15, 1) dá 25. A resposta é falsa.<br>
+Os números ímpares neste grupo somam um número par: 17, 10, 19, 4, 8, 12, 24.
+R: Somando todos os números ímpares (17, 19) dá 36. A resposta é Verdadeira.<br>
+Os números ímpares neste grupo somam um número par: 16, 11, 14, 4, 8, 13, 24.
+R: Somando todos os números ímpares (11, 13) dá 24. A resposta é Verdadeira.<br>
+Os números ímpares neste grupo somam um número par: 17, 9, 10, 12, 13, 4, 2.
+R: Somando todos os números ímpares (17, 9, 13) dá 39. A resposta é falsa.<br>
+Os números ímpares neste grupo somam um número par: 15, 32, 5, 13, 82, 7, 1.
+A:</div>
+                            <div class="prompt-box">Para ensinar o conceito de fração, podemos utilizar pizzas como exemplo. Dividimos a pizza em partes iguais e explicamos que cada parte representa uma fração. Em seguida, podemos pedir aos alunos que representem diferentes frações utilizando desenhos.</div>
+                            <div class="prompt-box">Para ensinar o conceito de fotosíntese, podemos começar explicando que as plantas utilizam a luz solar, a água e o dióxido de carbono para produzir glicose e oxigênio. Em seguida, podemos fazer uma analogia com uma fábrica, onde a luz solar seria a energia, a água e o dióxido de carbono seriam as matérias-primas, e a glicose e o oxigênio seriam os produtos finais.</div>
+                        </li>
+                        <li><strong>Self-Consistency:</strong> Talvez uma das técnicas mais avançadas disponíveis para engenharia de prompt seja a autoconsistência. Proposto por Wang et al. (2022) - <a href="https://arxiv.org/abs/2203.11171" target="_blank">Artigo</a>, a autoconsistência visa "substituir a decodificação ingênua e gananciosa usada na estimulação da cadeia de pensamento". A ideia é provar múltiplos e diversos caminhos de raciocínio por meio de CoT de poucas tentativas e usar as gerações para selecionar a resposta mais consistente. Isso ajuda a aumentar o desempenho das solicitações do CoT em tarefas que envolvem raciocínio aritmético e de bom senso.<br>
+                            <div class="prompt-box">Quando eu tinha 6 anos, minha irmã tinha metade da minha idade. Agora tenho 70 anos, quantos anos tem minha irmã?<br>Raciocine de 3 formas diferentes para responder essa pergunta e comente toda fase de raciocínio.</div>
+                            <div class="prompt-box">P: Existem 15 árvores no bosque. Os trabalhadores do bosque plantarão árvores no bosque hoje. Depois de terminarem, haverá 21 árvores. Quantas árvores os trabalhadores do bosque plantaram hoje? <br>Raciocine de 3 formas diferentes para responder essa pergunta e comente toda fase de raciocínio.<br>
+R: Começamos com 15 árvores. Mais tarde temos 21 árvores. A diferença deve ser o número de árvores plantadas.
+Então, eles devem ter plantado 21 – 15 = 6 árvores. A resposta é 6.
+P: Se houver 3 carros no estacionamento e chegarem mais 2 carros, quantos carros estão no estacionamento?
+R: Já existem 3 carros no estacionamento. Chegam mais 2. Agora existem 3 + 2 = 5 carros. A resposta é 5.
+P: Leah comeu 32 chocolates e sua irmã 42. Se elas comeram 35, quantos pedaços sobraram no total?
+R: Leah tinha 32 chocolates e a irmã de Leah tinha 42. Isso significa que originalmente havia 32 + 42 = 74
+chocolates. 35 foram comidos. Então, no total, eles ainda têm 74 – 35 = 39 chocolates. A resposta é 39.
+P: Jason comeu 20 pirulitos. Ele deu alguns pirulitos para Denny. Agora Jason tem 12 pirulitos. Quantos pirulitos
+Jason deu para Denny?
+R: Jason comeu 20 pirulitos. Como ele só tem 12 agora, deve ter dado o resto para Denny. O número de
+os pirulitos que ele deu ao Denny devem ter sido 20 - 12 = 8 pirulitos. A resposta é 8.
+P: Shawn tem cinco brinquedos. No Natal, ele ganhou dois brinquedos da mãe e do pai. Quantos brinquedos tem
+ele tem agora?
+R: Ele tem 5 brinquedos. Ele ganhou 2 da mãe, então depois disso ele tem 5 + 2 = 7 brinquedos. Então ele ganhou mais 2 do pai, então
+no total ele tem 7 + 2 = 9 brinquedos. A resposta é 9.
+P: Havia nove computadores na sala do servidor. Mais cinco computadores foram instalados por dia, desde
+segunda a quinta. Quantos computadores estão agora na sala do servidor?
+R: São 4 dias de segunda a quinta. 5 computadores foram adicionados a cada dia. Isso significa no total 4 * 5 =
+20 computadores foram adicionados. No início havia 9 computadores, então agora existem 9 + 20 = 29 computadores.
+A resposta é 29.
+P: Michael tinha 58 bolas de golfe. Na terça-feira, ele perdeu 23 bolas de golfe. Na quarta-feira, ele perdeu mais 2. Quantos
+bolas de golfe ele tinha no final da quarta-feira?
+R: Michael inicialmente tinha 58 bolas. Ele perdeu 23 na terça-feira, então depois disso ele tem 58 - 23 = 35 bolas. Sobre
+Quarta-feira ele perdeu mais 2, então agora tem 35 - 2 = 33 bolas. A resposta é 33.
+P: Olivia tem $ 23. Ela comprou cinco bagels por US$ 3 cada. Quanto dinheiro ela ainda tem?
+R: Ela comprou 5 bagels por US$ 3 cada. Isso significa que ela gastou US$ 15. Ela ainda tem $ 8.
+P: Quando eu tinha 6 anos, minha irmã tinha metade da minha idade. Agora tenho 70 anos, quantos anos minha irmã tem?
+R:</div>
+                            <div class="prompt-box">Imagine que você está resolvendo este problema em etapas, considerando diferentes abordagens para chegar à resposta. Vou comparar as respostas ao final para escolher a mais comum. Aqui está o problema:<br>"Maria é proprietária de uma padaria que produz 40 pães por dia. Todos os dias, ela reserva 10 pães para o café da manhã da equipe e vende o restante. Cada pão vendido gera uma receita de R$ 3,00. Além disso, se os pães não forem vendidos até o final do dia, ela doa metade dos pães restantes para um abrigo e guarda a outra metade para o dia seguinte. Em um dia típico, ela vende 25 pães. Qual é a receita diária média de Maria com as vendas, considerando que ela doa os pães não vendidos todos os dias?"<br><br>Instruções para o modelo: <br>- Resolva o problema passo a passo, detalhando seu raciocínio em cada etapa. <br>- Explique qualquer suposição que esteja fazendo, se aplicável. <br>- Explore diferentes abordagens para o cálculo, se houver mais de uma maneira de resolver o problema. <br>- Forneça uma resposta final para cada caminho de raciocínio. <br><br>Exemplo de Respostas:<br>
+- Caminho 1: [Descreva o cálculo e a resposta, explicando cada etapa e assumindo uma abordagem específica]
+- Caminho 2: [Descreva o cálculo e a resposta, explicando cada etapa com uma abordagem ligeiramente diferente]
+- Caminho 3: [Descreva o cálculo e a resposta, detalhando um terceiro possível caminho]
+
+No final, eu escolherei a resposta mais comum entre as abordagens.</div>
+                        </li>
+                        <li><strong>Tree of Thoughts (ToT):</strong> Para tarefas complexas que exigem exploração ou visão estratégica, as técnicas de solicitação tradicionais ou simples são insuficientes. Yao e outros (2023) e Longo (2023) propuseram recentemente a Árvore de Pensamentos (ToT), uma estrutura que generaliza a sugestão de cadeia de pensamentos e incentiva a exploração de pensamentos que servem como etapas intermediárias para a resolução geral de problemas com modelos de linguagem. <a href="https://arxiv.org/abs/2305.10601" target="_blank">Artigo</a>. Estimule a IA a explorar diferentes caminhos e ramificações do pensamento, gerando respostas mais completas e abrangentes.<br>
+                            <div class="prompt-box">Crie um plano de aula sobre a Revolução Industrial, considerando as seguintes etapas: causas, principais invenções, impactos sociais e econômicos. Para cada etapa, liste pelo menos três pontos importantes.</div>
+                            <div class="prompt-box">"Três especialistas estão discutindo onde a bola foi deixada. Cada especialista irá registrar um raciocínio por vez e, em seguida, compartilhará com os outros. Após cada rodada, eles podem ajustar suas respostas com base no que observaram. Se algum especialista perceber que está em um caminho errado, ele abandonará a discussão.
+
+A situação é a seguinte:
+
+Bob está na sala.
+Ele caminha até a cozinha carregando uma xícara.
+Ele coloca uma bola na xícara e leva a xicara para o quarto.
+Ele vira a xícara de cabeça para baixo e vai até o jardim.
+Ele coloca a xícara no jardim e vai até a garagem.
+Onde está a bola? "
+
+Narre o pensamento dos especialistas!</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">Modelos de Prompts</div>
+                <div class="accordion-content">
+                    <h3>Exemplos práticos para começar</h3>
+                    <div class="accordion-item">
+                        <div class="accordion-header">Modelos de Prompts</div>
+                        <div class="accordion-content">
+                            <h3>Exemplos Práticos para Começar</h3>
+                            <ul>
+                                <li><strong>Plano de Aula Interativo:</strong> "Você é um professor de ciências do 5º ano. Crie um plano de aula sobre o ciclo da água, incluindo uma introdução de 10 minutos, um quiz de 5 perguntas e uma simulação online. Forneça o resultado em formato de lista com marcadores e use um tom entusiástico!"</li>
+                                <li><strong>Explicação Técnica e Metáfora:</strong> "Explique redes neurais artificiais em dois formatos: 1) Um parágrafo técnico para especialistas em IA. 2) Uma metáfora simples para iniciantes, como uma rede de pescadores conectando ideias."</li>
+                                <li><strong>Poema com Estilo Específico:</strong> "Escreva um poema sobre a natureza no formato de um soneto, com métrica e rima tradicionais, destacando a beleza das florestas e rios."</li>
+                                <li><strong>Código Visual:</strong> "Gere um código Python para criar um gráfico de barras comparando as populações dos cinco países mais populosos do mundo (China, Índia, EUA, Indonésia, Paquistão). Inclua comentários explicativos."</li>
+                                <li><strong>Analogia Educacional:</strong> "Explique o conceito de gravidade para alunos do 6º ano usando a analogia de uma bola caindo de uma árvore. Inclua um exemplo prático."</li>
+                                <li><strong>História com Animais:</strong> "Crie uma história curta sobre o ciclo do carbono com personagens animais (ex.: um esquilo e uma árvore) para ensinar alunos do ensino fundamental."</li>
+                                <li><strong>Resumo Conciso:</strong> "Escreva um resumo de três frases sobre a Segunda Guerra Mundial, destacando causas e consequências, sem usar as palavras 'conflito' ou 'vitória'."</li>
+                                <li><strong>Perspectivas Históricas:</strong> "Apresente três perspectivas sobre a Independência do Brasil: a da corte portuguesa, a dos colonos brasileiros e a dos indígenas. Use um tom formal."</li>
+                                <li><strong>Infográfico Visual:</strong> "Crie um infográfico sobre o sistema digestivo humano para o 7º ano, incluindo texto descritivo e instruções para geração de imagem via Stable Diffusion."</li>
+                                <li><strong>Exercício com Dados:</strong> "Baseado na tabela periódica, gere um quiz de 5 perguntas de múltipla escolha para alunos do ensino médio sobre elementos químicos, como gases nobres."</li>
+                            </ul>
+                            <p>Quer mais exemplos? Confira nossa <a href="prompt-examples.html" target="_blank">Página de Modelos de Prompts</a> com uma coleção completa e pesquisável!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="footer" align="center">
+        &copy; 2025 Criado por <a href="https://www.instagram.com/alexsouzamsc" target="_red">Alex Souza</a>. Todos os direitos reservados.
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const content = item.querySelector('.accordion-content');
+                const isActive = item.classList.contains('active');
+
+                document.querySelectorAll('.accordion-item').forEach(el => {
+                    el.classList.remove('active');
+                    el.querySelector('.accordion-content').style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
