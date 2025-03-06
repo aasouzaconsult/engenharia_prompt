@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibração de Modelos LLM (Alex Souza)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .topic-image {
+            width: 100%;
+            max-width: 600px;
+            display: block;
+            margin: 10px auto;
+            border-radius: 10px;
+        }
+        .zoomable {
+            width: 100%;
+            max-width: 900px; /* Aumentando o tamanho padrão */
+            display: block;
+            margin: 10px auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .zoomable:hover {
+            transform: scale(1.2); /* Aplica o zoom ao passar o mouse */
+        }
+        a {
+            color: #00d4ff; /* Define uma cor fixa para todos os links */
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #00d4ff; /* Mantém a mesma cor mesmo após o clique */
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: #ff007a; /* Muda a cor ao passar o mouse, se desejar */
+        }
+    </style>
+</head>
+<body>
+    <nav style="background: rgba(0, 0, 0, 0.3); padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+        <a href="index.html" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">Início</a>
+        <a href="llm_list.html" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">Principais LLMs e API</a>
+        <a href="prompt-examples.html" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">+500 Exemplos Prompts</a>
+        <a href="https://aasouzaconsult.github.io/imagensprofissoes_prompts/" target="_blank" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">Prompts para imagens</a>
+        <a href="calibracao.html" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">Calibração de Modelos</a>
+        <a href="https://aasouzaconsult.github.io/gpt-personalizado/" target="_blank" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">GPT Personalizado</a>
+        <a href="https://linktr.ee/data.z" target="_blank" style="color: #00d4ff; text-decoration: none; margin: 0 15px; font-size: 1.2em;">Contatos</a>
+        <img src="Alex_Souza.jpeg" alt="Foto de Alex Souza" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
+    </nav>
+    
+    <div class="container">
+        <header>
+            <h1>
+                <img src="calib.png"
+                     alt="Ícone de terminal" 
+                     style="width: 60px; height: 60px; vertical-align: middle; margin-right: 10px;">
+                Calibração de Modelos
+            </h1>
+            <p><br>A calibração de modelos de <strong>Large Language Models (LLMs)</strong> é um processo essencial para ajustar o comportamento da IA e garantir que as respostas sejam mais alinhadas com as necessidades do usuário. Nesta página, exploraremos como esses ajustes afetam a saída dos modelos e como podemos experimentar essas configurações no <a href="https://aistudio.google.com/prompts/new_chat" target="_blank">Playground do Google AI</a>, onde podemos observar em tempo real o impacto de cada parâmetro e entender como calibrar um modelo para diferentes finalidades.</p>
+        </header>
+
+        <div class="content">
+            <h2>Prompt de Sistema (System Instructions)</h2>
+            <p>O parâmetro <strong>System Instructions</strong> define diretrizes para o comportamento do modelo, orientando seu tom, estilo de resposta e restrições. Ele garante que a IA siga um perfil específico ao interagir.</p>
+            <img src="si.png" alt="System Instructions" class="zoomable">
+            
+            <h2>Temperature</h2>
+            <p>Ajusta a criatividade das respostas geradas pelo modelo. Um valor mais alto incentiva respostas mais inovadoras e menos previsíveis. <a href="https://medium.com/blog-do-zouza/como-a-temperature-influencia-as-respostas-de-um-modelo-de-linguagem-7da28919876e">Mais informações.</a>
+            </p><br>
+            <p><strong>Exemplo</strong>: Temperatura Maior (mais criativo)</p>
+            <img src="temp_mais.png" alt="Temperature +" class="zoomable">
+
+            <p><strong>Exemplo</strong>: Temperatura Menor (mais direto)</p>
+            <img src="temp_menos.png" alt="Temperature -" class="zoomable">
+
+            <h2>Max Tokens</h2>
+            <p>Define o limite máximo de tokens (palavras ou partes de palavras) para a resposta gerada, garantindo que o conteúdo produzido não exceda um comprimento específico.</p>
+            <img src="max.png" alt="Max Tokens" class="zoomable">
+
+            <h2>Stop Sequences</h2>
+            <p>Palavras ou símbolos que indicam ao modelo quando encerrar a geração de texto, permitindo um maior controle sobre o resultado final.</p>
+            <img src="stop.png" alt="Stop Sequences" class="zoomable">
+
+            <h2>Top-k e Top-p</h2>
+            <p><strong>Top-k:</strong> Limita o número de palavras (ou tokens) que o modelo considera ao gerar a próxima palavra. Números menores tornam a resposta mais precisa; números maiores deixam o modelo explorar mais. <a href="https://medium.com/blog-do-zouza/como-o-top-k-influencia-as-respostas-de-um-modelo-de-linguagem-3073e3e74ae3">Mais informações.</a></p>
+            <p><strong>Top-p:</strong> Considera palavras até que a soma das suas probabilidades atinja um certo limiar, permitindo mais variação. <a href="https://medium.com/blog-do-zouza/como-o-top-p-influencia-as-respostas-de-um-modelo-de-linguagem-1d2835791c00">Mais informações.</a></p>
+            <p><strong>Exemplo</strong>: Top-k (não compatível com o modelo utilizado aqui)</p>
+            <img src="top-k.png" alt="Top-k" class="zoomable">
+
+            <p><strong>Exemplo</strong>: Top-p Maior (mais palavras)</p>
+            <img src="top_mais.png" alt="Top-p Maior" class="zoomable">
+
+            <p><strong>Exemplo</strong>: Top-p Menor (menos palavras)</p>
+            <img src="top_menos.png" alt="Top-p menor" class="zoomable">
+
+            <h2>Retrieval-Augmented Generation (RAG)</h2>
+            <p>A técnica aprimora os resultados de um LLM ao integrar informações específicas e atualizadas, sem a necessidade de alterar o modelo de IA subjacente.<br> Enriquece seus prompts com informações/documentos da sua empresa... <a href="https://medium.com/blog-do-zouza/rag-retrieval-augmented-generation-8238a20e381d">Mais informações.</a></p>
+            <img src="rag.png" alt="RAG" class="zoomable">
+
+            <h2>Fine-Tuning</h2>
+            <p><strong>É como dar um "treinamento especial" para que ele se torne especialista em uma tarefa específica.</strong> Isso permite que o modelo aprenda a realizar tarefas complexas com mais precisão e criatividade, como escrever textos no estilo de um autor específico ou gerar código de programação para diferentes aplicações.</p>
+            <img src="fine.png" alt="Fine-Tuning" class="zoomable">
+            <p><strong>Exemplo</strong>: Dá para testar por aqui</p>
+            <img src="fine1.png" alt="Fine-Tuning - google" class="zoomable">
+
+            <h2>Referências</h2>
+            <p>- <a href="https://medium.com/blog-do-zouza/rag-retrieval-augmented-generation-8238a20e381d">🎯 RAG — Retrieval-Augmented Generation</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/como-a-temperature-influencia-as-respostas-de-um-modelo-de-linguagem-7da28919876e">🔥 Como a Temperature influencia as respostas de um Modelo de Linguagem?</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/como-o-top-p-influencia-as-respostas-de-um-modelo-de-linguagem-1d2835791c00">🎯 Como o Top-p influencia as respostas de um Modelo de Linguagem?</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/como-o-top-k-influencia-as-respostas-de-um-modelo-de-linguagem-3073e3e74ae3">🎯 Como o Top-k influencia as respostas de um Modelo de Linguagem?</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/explicando-o-funcionamento-dos-llm-de-uma-forma-simples-46dee59683cb">🎯 Explicando o funcionamento dos LLMs de uma forma simples!</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/tudo-o-que-voc%C3%AA-precisa-saber-sobre-llm-large-language-model-a36be85bbf8f">🎯 Tudo o que você precisa saber sobre LLM (Large Language Model)</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/comparando-llms-large-language-models-945c9268c52f">⚖️ Comparando capacidades de LLMs (Large Language Models)</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/genai-o-que-%C3%A9-engenharia-de-prompt-6d416afe1323">🎯 GenAI — O que é Engenharia de Prompt?</a></p>
+            <p>- <a href="https://medium.com/blog-do-zouza/aplica%C3%A7%C3%B5es-da-ia-generativa-1ec13d39d1e8">💻 Aplicações da IA Generativa</a></p>
+            <p>- <a href="https://www.youtube.com/watch?v=HeOf3L6GWA8&list=PLo04OWzokNVA7bBkoqI5J7kexctdVz8r7">🎥 Vídeos sobre ferramentas de IA Generativa</a></p>
+        </div>
+    </div>
+
+    <div class="footer" align="center">
+        &copy; 2025 Criado por <a href="https://www.instagram.com/alexsouzamsc" target="_blank">Alex Souza</a>. Todos os direitos reservados.
+    </div>
+
+    <footer style="text-align: center; padding: 10px; font-size: 0.9em; color: #fff; display: flex; justify-content: center; align-items: center;">
+        <img src="fire.png" alt="Ícone de Fogo" style="width: 20px; height: 20px; margin-right: 8px;">
+        <p>Visitas nesta página: <span id="contador">Carregando...</span></p>
+    </footer>
+
+    <script type="module">
+        // Importa as funções necessárias do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        // Configuração do Firebase (substitua pelos seus dados)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLYKPCratpfc4C_t5B6ImoEaHs6RixY1c",
+            authDomain: "pagina-f081e.firebaseapp.com",
+            projectId: "pagina-f081e",
+            storageBucket: "pagina-f081e.firebasestorage.app",
+            messagingSenderId: "210197185880",
+            appId: "1:210197185880:web:5dc122279a79d6c46bd12d"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Referência ao documento do contador - https://console.firebase.google.com/project/pagina-f081e/firestore/databases/-default-/data/~2Fvisitas~2Fcontador
+        const contadorRef = doc(db, "visitas", "contador");
+
+        async function atualizarContador() {
+            try {
+                const docSnap = await getDoc(contadorRef);
+                if (docSnap.exists()) {
+                    let acessos = docSnap.data().acessos + 1;
+                    await updateDoc(contadorRef, { acessos: acessos });
+                    document.getElementById("contador").textContent = acessos;
+                } else {
+                    await setDoc(contadorRef, { acessos: 1 });
+                    document.getElementById("contador").textContent = 1;
+                }
+            } catch (error) {
+                console.error("Erro ao atualizar o contador:", error);
+                document.getElementById("contador").textContent = "Erro";
+            }
+        }
+
+        atualizarContador();
+    </script>
+
+</body>
+</html>
