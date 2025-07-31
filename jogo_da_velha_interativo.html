@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha Interativo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+        .cell.winner {
+            background-color: #a0e7a0;
+        }
+        #status {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="board" id="board"></div>
+        <div id="status"></div>
+        <button onclick="resetGame()">Reiniciar Jogo</button>
+    </div>
+
+    <script>
+        const boardElement = document.getElementById("board");
+        const statusElement = document.getElementById("status");
+        let board = Array(9).fill("");
+        let currentPlayer = "X";
+        let gameActive = true;
+
+        function renderBoard() {
+            boardElement.innerHTML = "";
+            board.forEach((cell, index) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("cell");
+                cellElement.textContent = cell;
+                cellElement.addEventListener("click", () => handleCellClick(index));
+                boardElement.appendChild(cellElement);
+            });
+        }
+
+        function handleCellClick(index) {
+            if (board[index] || !gameActive) return;
+            board[index] = currentPlayer;
+            renderBoard();
+            if (checkWinner()) {
+                statusElement.textContent = `Jogador ${currentPlayer} venceu!`;
+                gameActive = false;
+            } else if (!board.includes("")) {
+                statusElement.textContent = "Empate!";
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                statusElement.textContent = `Vez do jogador ${currentPlayer}`;
+            }
+        }
+
+        function checkWinner() {
+            const winConditions = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    highlightWinnerCells([a,b,c]);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function highlightWinnerCells(indices) {
+            indices.forEach(i => {
+                boardElement.children[i].classList.add("winner");
+            });
+        }
+
+        function resetGame() {
+            board = Array(9).fill("");
+            currentPlayer = "X";
+            gameActive = true;
+            statusElement.textContent = "Vez do jogador X";
+            renderBoard();
+        }
+
+        resetGame();
+    </script>
+</body>
+</html>
