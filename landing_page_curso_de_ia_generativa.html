@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Landing page para venda do curso online de IA Generativa do Prof. Alex Souza." />
+  <title>Curso de IA Generativa • Prof. Alex Souza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f0f1a;
+      --txt: #eaf2ff;
+      --muted: #b9c4d6;
+      --primary: #7c3aed; /* roxo vibrante */
+      --secondary: #22d3ee; /* ciano */
+      --accent: #ff6b6b; /* coral */
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.12);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 18px;
+      --container: 1140px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background: radial-gradient(1200px 1200px at 80% -10%, rgba(124,58,237,.25), transparent 60%), radial-gradient(1000px 900px at 0% 0%, rgba(34,211,238,.25), transparent 60%), var(--bg); color:var(--txt); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:100%;max-width:var(--container);margin-inline:auto;padding:0 20px}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:rgba(15,15,26,.7);backdrop-filter: blur(10px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.2px}
+    .brand .logo{width:36px;height:36px;border-radius:10px;background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 6px 20px rgba(124,58,237,.45)}
+    .brand span{font-size:1.05rem}
+    .nav a.btn{padding:10px 16px;border:1px solid var(--border);border-radius:12px}
+    .nav a.btn:hover{border-color:transparent;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 8px 24px rgba(124,58,237,.35)}
+
+    /* Hero */
+    .hero{padding:80px 0 40px; position:relative; overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04)}
+    .badge .dot{width:8px;height:8px;border-radius:50%;background: conic-gradient(var(--secondary), var(--primary))}
+    h1{margin:14px 0 10px;font-size:clamp(1.8rem, 4.2vw, 3rem);line-height:1.05}
+    .gradient{background: linear-gradient(135deg, #fff, var(--secondary), var(--primary)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .sub{color:var(--muted);font-size:clamp(.98rem, 1.8vw, 1.05rem)}
+    .cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px}
+    .btn-primary{padding:14px 20px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--secondary)); color:#0b0b14; font-weight:800; letter-spacing:.2px; box-shadow:0 10px 30px rgba(124,58,237,.35);}
+    .btn-primary:hover{transform:translateY(-1px)}
+    .btn-ghost{padding:12px 18px;border-radius:14px;border:1px solid var(--border)}
+    .stats{margin-top:24px;display:flex;gap:18px;flex-wrap:wrap;color:var(--muted)}
+    .stat{padding:10px 14px;border:1px dashed var(--border);border-radius:12px;background:rgba(255,255,255,.03)}
+
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .hero-card .screen{aspect-ratio:16/10;border-radius:14px;background:
+      radial-gradient(120% 120% at 10% 20%, rgba(34,211,238,.12), transparent),
+      radial-gradient(120% 120% at 100% 0%, rgba(124,58,237,.18), transparent),
+      #121224;
+      position:relative;overflow:hidden;border:1px solid var(--border)
+    }
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{font-size:.8rem;color:var(--muted);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--border)}
+
+    /* Sections */
+    section{padding:64px 0}
+    .section-title{font-size:1.6rem;margin:0 0 10px}
+    .section-sub{color:var(--muted);margin:0 0 24px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .card h3{margin:6px 0 6px;font-size:1.05rem}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(124,58,237,.15);color:#e9d5ff;border:1px solid rgba(124,58,237,.35);font-size:.8rem}
+
+    /* Curriculum */
+    .list{display:grid;gap:10px}
+    .item{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03)}
+    .item .num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;color:#0b0b14;background:linear-gradient(135deg,var(--secondary),var(--primary))}
+
+    /* Instructor */
+    .instructor{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}
+    .avatar{width:140px;height:140px;border-radius:20px;background:linear-gradient(135deg,var(--secondary),var(--primary));display:grid;place-items:center;font-weight:900;color:#0b0b14;border:1px solid var(--border)}
+
+    /* Testimonials */
+    .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .t{padding:18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card)}
+    .stars{color:#ffd166;letter-spacing:2px}
+
+    /* Pricing */
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .price-card{padding:20px;border-radius:var(--radius);border:1px solid var(--border);background:linear-gradient(180deg, rgba(124,58,237,.12), rgba(255,255,255,.03))}
+    .price{font-size:2rem;font-weight:800;margin:8px 0}
+    .buy{display:block;text-align:center;margin-top:12px;padding:14px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#0b0b14;font-weight:900;box-shadow:0 12px 32px rgba(124,58,237,.38)}
+    .buy:hover{transform:translateY(-1px)}
+
+    /* FAQ */
+    details{border:1px solid var(--border);border-radius:12px;padding:14px;background:rgba(255,255,255,.03)}
+    details+details{margin-top:10px}
+    summary{cursor:pointer;font-weight:700}
+
+    /* Footer */
+    footer{border-top:1px solid var(--border);padding:28px 0;color:var(--muted)}
+
+    /* Utilities */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr}
+      .cards, .testimonials, .pricing{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 640px){
+      .cards, .testimonials, .pricing, .grid-2{grid-template-columns:1fr}
+      .instructor{grid-template-columns:1fr}
+      .avatar{width:100%;height:120px}
+      .nav a.btn{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Ir para o topo">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Curso de IA Generativa</span>
+      </a>
+      <nav>
+        <a class="btn" href="#conteudo">Conteúdo</a>
+        <a class="btn" href="#depoimentos">Depoimentos</a>
+        <a class="btn" href="#preco">Investimento</a>
+        <a class="btn" href="#comprar">Comprar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="badge"><span class="dot"></span> Turma Online • Acesso imediato</div>
+          <h1>
+            Domine <span class="gradient">IA Generativa</span> do Zero ao Avançado
+          </h1>
+          <p class="sub">Aprenda LLMs, RAG, agentes, avaliação, boas práticas e aplicações reais para negócios — com projetos guiados e suporte da comunidade.</p>
+          <div class="cta">
+            <a class="btn-primary" id="comprar" href="https://pay.seulink.com/checkout" target="_blank" rel="noopener">Comprar agora</a>
+            <a class="btn-ghost" href="#conteudo">Ver conteúdo do curso</a>
+          </div>
+          <div class="stats">
+            <div class="stat">+30h de conteúdo</div>
+            <div class="stat">Projetos práticos</div>
+            <div class="stat">Certificado de conclusão</div>
+          </div>
+        </div>
+        <div>
+          <div class="hero-card">
+            <div class="screen" aria-label="Prévia do curso">
+              <!-- simples mock de code preview -->
+              <svg viewBox="0 0 600 360" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#22d3ee"/>
+                    <stop offset="100%" stop-color="#7c3aed"/>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="600" height="360" fill="#0e0e1c"/>
+                <rect x="24" y="24" width="552" height="312" rx="14" fill="#0f1224" stroke="rgba(255,255,255,.12)"/>
+                <g font-family="monospace" font-size="14" fill="#cbd5e1">
+                  <text x="44" y="70">from llm import Agent, Tool</text>
+                  <text x="44" y="96">agent = Agent(model="gpt-4o", tools=[Tool("search"), Tool("python")])</text>
+                  <text x="44" y="122">answer = agent.run("Como criar um chatbot com RAG?")</text>
+                  <text x="44" y="148">print(answer)</text>
+                </g>
+                <rect x="44" y="208" width="420" height="14" rx="7" fill="url(#g1)"/>
+                <rect x="44" y="232" width="320" height="14" rx="7" fill="rgba(124,58,237,.35)"/>
+              </svg>
+            </div>
+            <div class="chips">
+              <span class="chip">LLMs</span>
+              <span class="chip">Transformers</span>
+              <span class="chip">RAG</span>
+              <span class="chip">Agentes</span>
+              <span class="chip">Avaliação</span>
+              <span class="chip">Deploy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES / DIFERENCIAIS -->
+    <section>
+      <div class="container">
+        <h2 class="section-title">Por que este curso?</h2>
+        <p class="section-sub">Currículo atualizado, didática direta e foco em resultados aplicados.</p>
+        <div class="cards">
+          <article class="card">
+            <span class="tag">Projeto guiado</span>
+            <h3>Construa um chatbot com RAG</h3>
+            <p>Pipeline completo: ingestão, indexação, recuperação, avaliação e melhoria contínua.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Hands-on</span>
+            <h3>Laboratórios práticos</h3>
+            <p>Exercícios com Python, LangChain/LangGraph, e vetores (Postgres/Redis/Supabase).</p>
+          </article>
+          <article class="card">
+            <span class="tag">Mercado</span>
+            <h3>Use cases reais</h3>
+            <p>Automação de atendimento, geração de relatórios, copilotos internos e agentes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CURRICULUM -->
+    <section id="conteudo">
+      <div class="container">
+        <h2 class="section-title">Conteúdo programático</h2>
+        <p class="section-sub">Do fundamento à produção, com boas práticas e segurança.</p>
+        <div class="grid-2">
+          <div class="list">
+            <div class="item"><div class="num">01</div><div><strong>Fundamentos:</strong> LLMs, embeddings, atenção/transformers, tokenização, limites e custos.</div></div>
+            <div class="item"><div class="num">02</div><div><strong>Ferramentas:</strong> OpenAI / HF, LangChain & LangGraph, MCP, vetores e bancos.</div></div>
+            <div class="item"><div class="num">03</div><div><strong>RAG na prática:</strong> ingestão, chunking, reranking, avaliação (precision/recall) e métricas.</div></div>
+          </div>
+          <div class="list">
+            <div class="item"><div class="num">04</div><div><strong>Agentes:</strong> planejamento, ferramentas, memória e observabilidade.</div></div>
+            <div class="item"><div class="num">05</div><div><strong>Segurança:</strong> OWASP LLM Top 10, guardrails, sandboxing, revisão humana.</div></div>
+            <div class="item"><div class="num">06</div><div><strong>Deploy & Prod:</strong> tracing, avaliação contínua, custos, monitoramento e SLAs.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTRUCTOR -->
+    <section>
+      <div class="container">
+        <h2 class="section-title">Instrutor</h2>
+        <div class="instructor card">
+          <div class="avatar" aria-hidden="true">AS</div>
+          <div>
+            <h3>Prof. Alex Souza</h3>
+            <p class="section-sub" style="margin:6px 0 0">Cientista de Dados e professor nas áreas de IA, ML e IA Generativa. Experiência com LLMs, RAG, agentes e aplicações no mercado.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="depoimentos">
+      <div class="container">
+        <h2 class="section-title">Depoimentos</h2>
+        <p class="section-sub">Resultados reais de quem aplicou o conteúdo.</p>
+        <div class="testimonials">
+          <figure class="t">
+            <div class="stars" aria-label="5 de 5">★★★★★</div>
+            <figcaption><strong>Mariana F.</strong> — "Consegui colocar um chatbot com RAG em produção em 3 semanas. Clareza e prática!"</figcaption>
+          </figure>
+          <figure class="t">
+            <div class="stars" aria-label="5 de 5">★★★★★</div>
+            <figcaption><strong>Rafael C.</strong> — "A parte de avaliação e custos me salvou no projeto da empresa."</figcaption>
+          </figure>
+          <figure class="t">
+            <div class="stars" aria-label="5 de 5">★★★★★</div>
+            <figcaption><strong>Ana P.</strong> — "Didática excelente. Já estou criando meus próprios agentes com ferramentas."</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING / CTA -->
+    <section id="preco">
+      <div class="container">
+        <h2 class="section-title">Escolha seu plano</h2>
+        <p class="section-sub">Acesso imediato e atualizações inclusas.</p>
+        <div class="pricing">
+          <div class="price-card">
+            <h3>Essencial</h3>
+            <p>Conteúdo completo + certificado</p>
+            <div class="price">R$ 497</div>
+            <a class="buy" href="https://pay.seulink.com/checkout" target="_blank" rel="noopener">Comprar Essencial</a>
+          </div>
+          <div class="price-card" style="outline:2px solid rgba(34,211,238,.35)">
+            <h3>Profissional</h3>
+            <p>+ Laboratórios e templates</p>
+            <div class="price">R$ 697</div>
+            <a class="buy" href="https://pay.seulink.com/checkout" target="_blank" rel="noopener">Comprar Profissional</a>
+          </div>
+          <div class="price-card">
+            <h3>Mentoria</h3>
+            <p>+ Encontros ao vivo e revisão</p>
+            <div class="price">R$ 997</div>
+            <a class="buy" href="https://pay.seulink.com/checkout" target="_blank" rel="noopener">Comprar Mentoria</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <div class="container">
+        <h2 class="section-title">Perguntas frequentes</h2>
+        <div class="grid-2">
+          <div>
+            <details>
+              <summary>Quando começo?</summary>
+              <p class="section-sub">O acesso é liberado imediatamente após a confirmação do pagamento.</p>
+            </details>
+            <details>
+              <summary>Por quanto tempo terei acesso?</summary>
+              <p class="section-sub">Acesso por 12 meses com atualizações inclusas.</p>
+            </details>
+          </div>
+          <div>
+            <details>
+              <summary>Preciso saber programar?</summary>
+              <p class="section-sub">Conhecimentos básicos de lógica ajudam, mas há trilhas para iniciantes com material guiado.</p>
+            </details>
+            <details>
+              <summary>Há certificado?</summary>
+              <p class="section-sub">Sim, certificado após conclusão de todas as atividades obrigatórias.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>© <span id="year"></span> Prof. Alex Souza — Todos os direitos reservados.</div>
+      <div><a href="#top">Voltar ao topo</a></div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
