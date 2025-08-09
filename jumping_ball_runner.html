@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jumping Ball Runner</title>
+  <style>
+    :root{
+      --bg1:#87CEEB; /* sky */
+      --bg2:#B0E0E6; /* horizon */
+      --ui:#1f2937;  /* slate-800 */
+      --accent:#ff2d55;
+      --accent2:#ffd60a;
+      --good:#22c55e;
+      --bad:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    body{display:flex;flex-direction:column;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ui)}
+    header{padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .ball-logo{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #fff 0 35%, #ff7aa2 36% 70%, #ff2d55 71% 100%);
+      box-shadow:0 4px 0 rgba(0,0,0,.12) inset, 0 2px 6px rgba(0,0,0,.25)}
+    .hud{display:flex;gap:14px;align-items:center;font-variant-numeric:tabular-nums}
+    .badge{background:#ffffffb8;border:1px solid #00000012;padding:6px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{appearance:none;border:0;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.12);transition:transform .06s ease, box-shadow .2s ease}
+    .btn:active{transform:translateY(1px);box-shadow:0 3px 8px rgba(0,0,0,.16)}
+    .primary{background:linear-gradient(135deg,var(--accent),#ff7aa2);color:#fff}
+    .ghost{background:#ffffffcc;border:1px solid #00000012}
+    .toggle{display:inline-flex;align-items:center;gap:8px}
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:0 10px 14px}
+    #wrap{width:100%;max-width:980px;aspect-ratio:16/9;position:relative;border-radius:18px;overflow:hidden;border:2px solid #00000010;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+    canvas{width:100%;height:100%;display:block;background:transparent}
+    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+    .overlay .card{pointer-events:auto;background:#ffffffda;border:1px solid #00000014;border-radius:16px;padding:18px 18px 14px;backdrop-filter:blur(6px);text-align:center;max-width:min(560px,95%);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .title{font-size:clamp(20px,3.2vw,34px);margin:0 0 6px}
+    .subtitle{margin:0 0 10px;font-size:clamp(14px,2.1vw,18px)}
+    .kbd{display:inline-block;background:#111827;color:#fff;border-radius:6px;padding:2px 6px;font-weight:700;margin:0 4px}
+    .small{font-size:12px;opacity:.8}
+    footer{padding:8px 14px;display:flex;justify-content:center;gap:8px;color:#00000099}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="ball-logo" aria-hidden="true"></span> Jumping Ball Runner</div>
+    <div class="hud">
+      <div id="score" class="badge" aria-live="polite" aria-atomic="true">Score: 0</div>
+      <div id="best" class="badge" aria-live="polite" aria-atomic="true">Recorde: 0</div>
+      <div class="controls">
+        <button id="btnRestart" class="btn primary" title="Reiniciar (R)">Reiniciar</button>
+        <button id="btnMute" class="btn ghost" title="Ativar/desativar som">🔊 Som</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="wrap" role="application" aria-label="Jumping Ball Runner">
+      <canvas id="game" aria-hidden="true"></canvas>
+      <div id="startOverlay" class="overlay">
+        <div class="card">
+          <h1 class="title">Pule os obstáculos e sobreviva!</h1>
+          <p class="subtitle">Pressione <span class="kbd">Barra de Espaço</span> ou <span class="kbd">⬆</span> — ou toque/click — para <b>pular</b>.<br/>Velocidade aumenta com o tempo. Desvie, marque pontos e bata seu recorde.</p>
+          <p class="small">Acessível e adequado para todos. Dica: mantenha o ritmo 😉</p>
+          <div style="margin-top:12px"><button id="btnPlay" class="btn primary">Jogar</button></div>
+        </div>
+      </div>
+      <div id="gameOver" class="overlay" style="display:none">
+        <div class="card">
+          <h2 class="title">Fim de jogo!</h2>
+          <p class="subtitle"><span id="finalScore">0</span> pontos — <span id="recordBadge">novo recorde! 🎉</span></p>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:6px">
+            <button id="btnAgain" class="btn primary">Jogar novamente</button>
+            <button id="btnShare" class="btn ghost" title="Compartilhar pontuação">Compartilhar</button>
+          </div>
+          <p class="small" style="margin-top:8px">Dica: Segure o pulo para saltos levemente mais altos.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>Controles: Espaço/↑/Clique/Toque para pular • R para reiniciar • M para som</span>
+  </footer>
+
+  <script>
+    // ===== Canvas setup (HiDPI) =====
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const wrap = document.getElementById('wrap');
+
+    function resize(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const {clientWidth:w, clientHeight:h} = wrap;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0); // draw in CSS pixels
+    }
+    addEventListener('resize', resize);
+
+    // ===== Game state =====
+    const G = {
+      playing:false,
+      over:false,
+      t:0,
+      speed:4,        // base units per frame at ~60fps
+      maxSpeed:12,
+      gravity:0.6,
+      jumpV:-11,
+      groundY:0,
+      score:0,
+      best: Number(localStorage.getItem('jbr_best')||0),
+      muted:false,
+    };
+
+    // ===== Sounds (WebAudio lightweight) =====
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let actx = null;
+    function initAudio(){
+      if (!actx) actx = new AudioCtx();
+    }
+    function beep(type='sine', freq=440, len=0.1, vol=0.2){
+      if (G.muted) return;
+      initAudio();
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      o.type = type; o.frequency.value = freq; g.gain.value = vol;
+      o.connect(g); g.connect(actx.destination);
+      o.start(); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + len);
+      o.stop(actx.currentTime + len);
+    }
+    function noise(len=0.15, vol=0.25){
+      if (G.muted) return;
+      initAudio();
+      const bufferSize = 2 * actx.sampleRate * len;
+      const buffer = actx.createBuffer(1, bufferSize, actx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
+      const n = actx.createBufferSource(); n.buffer = buffer;
+      const g = actx.createGain(); g.gain.value = vol;
+      n.connect(g); g.connect(actx.destination);
+      n.start();
+    }
+
+    // ===== Entities =====
+    const player = {
+      x: 120,
+      y: 0,
+      r: 26,
+      vy: 0,
+      grounded: true,
+      blinkT: 0,
+      shadowScale: 1,
+    };
+
+    /** Parallax layers */
+    const clouds = [], hills = [], groundSegs = [];
+    const obstacles = [];
+
+    function resetWorld(){
+      G.t=0; G.speed=4; G.score=0; G.over=false; obstacles.length=0; clouds.length=0; hills.length=0; groundSegs.length=0;
+      const h = canvas.height / (window.devicePixelRatio||1);
+      G.groundY = Math.floor(h * 0.82);
+      player.y = G.groundY - player.r; player.vy=0; player.grounded=true; player.shadowScale=1;
+      // Build parallax content
+      for (let i=0;i<8;i++) clouds.push({x: i*180 + Math.random()*160, y: 50+Math.random()*120, r: 20+Math.random()*30});
+      for (let i=0;i<7;i++) hills.push({x:i*220 + Math.random()*160, h: 60+Math.random()*70});
+      for (let i=0;i<18;i++) groundSegs.push({x:i*70, w:72});
+    }
+
+    // Spawn obstacles
+    let nextSpawn = 0;
+    function scheduleNextSpawn(){
+      const base = 70 + Math.random()*60; // distance units
+      const speedFactor = Math.max(0.5, 1.2 - (G.speed-4)*0.05);
+      nextSpawn = G.t + base * speedFactor;
+    }
+
+    function spawnObstacle(){
+      const kind = Math.random()<0.75? 'box' : 'cone';
+      const height = kind==='box' ? (30 + Math.random()*28) : (24 + Math.random()*22);
+      const width  = kind==='box' ? (28 + Math.random()*24) : (24 + Math.random()*20);
+      const color  = kind==='box' ? '#ff914d' : '#8b5cf6';
+      obstacles.push({x: canvas.width/(window.devicePixelRatio||1) + 10, y: G.groundY, w: width, h: height, kind, color, passed:false});
+      scheduleNextSpawn();
+    }
+
+    // ===== Input =====
+    let jumpPressed=false, jumpHold=false;
+    function wantJump(){ jumpPressed=true; jumpHold=true; }
+    function endJump(){ jumpHold=false; }
+
+    addEventListener('keydown',e=>{
+      if (e.repeat) return;
+      if (e.key===' '|| e.key==='ArrowUp' || e.key==='w') { wantJump(); e.preventDefault(); }
+      if (e.key==='r'|| e.key==='R') { restart(); }
+      if (e.key==='m'|| e.key==='M') { toggleMute(); }
+    });
+    addEventListener('keyup',e=>{ if (e.key===' '|| e.key==='ArrowUp'|| e.key==='w') endJump(); });
+
+    // Pointer
+    wrap.addEventListener('pointerdown', wantJump);
+    wrap.addEventListener('pointerup', endJump);
+
+    // Buttons
+    document.getElementById('btnPlay').onclick = start;
+    document.getElementById('btnAgain').onclick = restart;
+    document.getElementById('btnRestart').onclick = restart;
+    document.getElementById('btnShare').onclick = share;
+    document.getElementById('btnMute').onclick = toggleMute;
+
+    function toggleMute(){ G.muted = !G.muted; document.getElementById('btnMute').textContent = G.muted ? '🔇 Sem som' : '🔊 Som'; if(!G.muted) beep('triangle',660,0.08,0.12); }
+
+    // ===== Game loop =====
+    let raf;
+    function start(){
+      initAudio();
+      document.getElementById('startOverlay').style.display='none';
+      document.getElementById('gameOver').style.display='none';
+      G.playing = true; G.over=false; resetWorld(); scheduleNextSpawn();
+      cancelAnimationFrame(raf); loop();
+      beep('sine',740,0.09,0.18);
+    }
+    function restart(){
+      if(!G.playing) { start(); return; }
+      document.getElementById('gameOver').style.display='none';
+      resetWorld(); scheduleNextSpawn();
+      beep('triangle',520,0.08,0.15);
+    }
+
+    function loop(){
+      raf = requestAnimationFrame(loop);
+      update();
+      draw();
+    }
+
+    function update(){
+      G.t++;
+      // Speed increases over time
+      if (G.speed < G.maxSpeed) G.speed += 0.0025; // smooth ramp
+
+      // Player jump physics
+      if (jumpPressed && player.grounded){
+        player.vy = G.jumpV * (jumpHold? 1.04 : 1);
+        player.grounded = false;
+        for (let i=0;i<6;i++) makeDust(player.x+6, G.groundY+2, -Math.random()*1.5, -Math.random()*2);
+        // Funny boing
+        beep('sine', 520+Math.random()*40, 0.08, 0.2);
+      }
+      jumpPressed=false;
+
+      // variable jump height (release to cut)
+      if (!jumpHold && player.vy < -6) player.vy = -6;
+
+      player.vy += G.gravity;
+      player.y += player.vy;
+      if (player.y >= G.groundY - player.r){
+        player.y = G.groundY - player.r; player.vy=0; if (!player.grounded){
+          // landing thump
+          beep('triangle', 180, 0.04, 0.2);
+          for (let i=0;i<6;i++) makeDust(player.x, G.groundY+2, Math.random()*2, -Math.random()*2);
+        }
+        player.grounded = true;
+      }
+
+      // Parallax move
+      const w = canvas.width/(window.devicePixelRatio||1);
+      for (const c of clouds){ c.x -= (G.speed*0.25 + 0.3); if (c.x < -80) { c.x = w + Math.random()*100; c.y = 40 + Math.random()*140; } }
+      for (const h of hills){ h.x -= (G.speed*0.5 + 0.6); if (h.x < -140) { h.x = w + Math.random()*120; h.h = 60+Math.random()*70; } }
+      for (const g of groundSegs){ g.x -= (G.speed + 1.2); if (g.x < -80) { g.x = w + 70; } }
+
+      // Obstacles
+      if (G.t > nextSpawn) spawnObstacle();
+      for (const o of obstacles){ o.x -= (G.speed + 2); if (!o.passed && o.x + o.w < player.x - player.r){
+          o.passed = true; G.score += 1; document.getElementById('score').textContent = `Score: ${G.score}`; beep('square', 880, 0.06, 0.12);
+        }
+      }
+      // Remove off-screen
+      while (obstacles.length && obstacles[0].x + obstacles[0].w < -10) obstacles.shift();
+
+      // Collisions
+      for (const o of obstacles){
+        const px = player.x, py = player.y;
+        // approximate ball vs rect collision
+        const cx = Math.max(o.x, Math.min(px, o.x + o.w));
+        const cy = Math.max(G.groundY - o.h, Math.min(py, G.groundY));
+        const dx = px - cx, dy = py - cy;
+        if (dx*dx + dy*dy < player.r*player.r){
+          gameOver();
+          break;
+        }
+      }
+
+      // Eye blink timer
+      player.blinkT = (player.blinkT + 1) % 220;
+      // Shadow scale based on height
+      const hdiff = (G.groundY - (player.y + player.r));
+      player.shadowScale = Math.max(0.5, 1 - hdiff/160);
+    }
+
+    // ===== Particles =====
+    const dust = [];
+    function makeDust(x,y,vx,vy){ dust.push({x,y,vx,vy,a:1, r:2+Math.random()*2}); }
+    function updateDust(){
+      for (const p of dust){ p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.a -= 0.03; }
+      while (dust.length && dust[0].a <= 0) dust.shift();
+    }
+
+    // ===== Draw =====
+    function draw(){
+      const w = canvas.width/(window.devicePixelRatio||1);
+      const h = canvas.height/(window.devicePixelRatio||1);
+      ctx.clearRect(0,0,w,h);
+
+      // Sky gradient backdrop already via body, but paint subtle vignette
+      const grad = ctx.createLinearGradient(0,0,0,h);
+      grad.addColorStop(0,'rgba(255,255,255,0.0)');
+      grad.addColorStop(1,'rgba(255,255,255,0.15)');
+      ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+
+      // Sun
+      ctx.beginPath(); ctx.arc(w-80,80,38,0,Math.PI*2); ctx.fillStyle = '#ffd60a'; ctx.fill();
+
+      // Clouds (parallax far)
+      for (const c of clouds){ drawCloud(c.x,c.y,c.r); }
+
+      // Hills (mid layer)
+      for (const m of hills){ drawHill(m.x, h-120, m.h); }
+
+      // Ground (near layer + stripes)
+      drawGround(h);
+
+      // Particles
+      updateDust();
+      for (const p of dust){ ctx.globalAlpha = Math.max(0,p.a); ctx.fillStyle = '#c084fc'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; }
+
+      // Obstacles
+      for (const o of obstacles){ drawObstacle(o); }
+
+      // Player
+      drawPlayer();
+    }
+
+    function drawCloud(x,y,r){
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI*2);
+      ctx.arc(x+r*0.8, y+6, r*0.8, 0, Math.PI*2);
+      ctx.arc(x-r*0.7, y+8, r*0.7, 0, Math.PI*2);
+      ctx.fill();
+    }
+    function drawHill(x, baseY, h){
+      ctx.fillStyle = '#84cc16';
+      ctx.beginPath();
+      ctx.moveTo(x-80, baseY);
+      ctx.quadraticCurveTo(x, baseY-h, x+100, baseY);
+      ctx.closePath(); ctx.fill();
+      // outline
+      ctx.strokeStyle = 'rgba(0,0,0,.06)'; ctx.lineWidth = 2; ctx.stroke();
+    }
+    function drawGround(h){
+      const gy = G.groundY;
+      // Grass top
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(0, gy, canvas.width/(window.devicePixelRatio||1), h-gy);
+      // Dirt
+      ctx.fillStyle = '#a16207';
+      ctx.fillRect(0, gy+10, canvas.width/(window.devicePixelRatio||1), h-gy-10);
+      // Tiles moving
+      ctx.fillStyle = '#16a34a';
+      for (const g of groundSegs){ ctx.fillRect(g.x, gy-6, 50, 6); }
+    }
+
+    function drawObstacle(o){
+      const top = o.y - o.h;
+      ctx.fillStyle = o.color;
+      if (o.kind==='box'){
+        roundRect(o.x, top, o.w, o.h, 6);
+        ctx.fill();
+        // goofy face on obstacle sometimes
+        if ((o.w>40 || Math.random()<0.15)){
+          ctx.fillStyle='#111827';
+          ctx.beginPath(); ctx.arc(o.x+o.w*0.35, top+o.h*0.4, 3, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(o.x+o.w*0.65, top+o.h*0.4, 3, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(o.x+o.w*0.30, top+o.h*0.7); ctx.quadraticCurveTo(o.x+o.w*0.5, top+o.h*0.8, o.x+o.w*0.70, top+o.h*0.7); ctx.strokeStyle='#111827'; ctx.lineWidth=2; ctx.stroke();
+        }
+      } else {
+        // cone
+        ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(o.x+o.w, o.y); ctx.lineTo(o.x+o.w*0.5, top); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.stroke();
+      }
+      // shadow
+      ctx.globalAlpha=0.25; ctx.fillStyle='#000'; roundRect(o.x, o.y+2, o.w, 4, 2); ctx.fill(); ctx.globalAlpha=1;
+    }
+
+    function drawPlayer(){
+      const x=player.x, y=player.y, r=player.r;
+      // Shadow
+      ctx.globalAlpha = 0.25; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(x+4, G.groundY+2, r*player.shadowScale, 6*player.shadowScale, 0, 0, Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+
+      // Body (caricature ball)
+      const grad = ctx.createRadialGradient(x-8, y-10, r*0.2, x, y, r);
+      grad.addColorStop(0, '#fff'); grad.addColorStop(0.4, '#ff85b3'); grad.addColorStop(1, '#ff2d55');
+      ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+
+      // Face
+      const blink = (player.blinkT>200)? 0.1 : 1; // blink briefly
+      ctx.fillStyle = '#111827';
+      // Eyes
+      ctx.beginPath(); ctx.ellipse(x-8, y-4, 4, 4*blink, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+10, y-3, 4, 4*blink, 0, 0, Math.PI*2); ctx.fill();
+      // Mouth (goofy)
+      ctx.beginPath(); ctx.moveTo(x-8, y+8); ctx.quadraticCurveTo(x+2, y+12, x+10, y+8); ctx.strokeStyle='#111827'; ctx.lineWidth=2; ctx.stroke();
+
+      // Sweat drop when fast
+      if (G.speed>9 && !player.grounded){ ctx.fillStyle='#60a5fa'; ctx.beginPath(); ctx.ellipse(x+18, y-16, 3,5, 0,0,Math.PI*2); ctx.fill(); }
+    }
+
+    function roundRect(x,y,w,h,r){
+      const rr = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr,y);
+      ctx.arcTo(x+w,y,x+w,y+h,rr);
+      ctx.arcTo(x+w,y+h,x,y+h,rr);
+      ctx.arcTo(x,y+h,x,y,rr);
+      ctx.arcTo(x,y,x+w,y,rr);
+      ctx.closePath();
+    }
+
+    function gameOver(){
+      if (G.over) return; G.over=true; G.playing=false;
+      noise(0.18,0.3); beep('square', 140, 0.12, 0.25);
+      cancelAnimationFrame(raf);
+      // record
+      if (G.score > G.best){ G.best = G.score; localStorage.setItem('jbr_best', String(G.best)); }
+      // update HUD & overlay
+      document.getElementById('score').textContent = `Score: ${G.score}`;
+      document.getElementById('best').textContent = `Recorde: ${G.best}`;
+      document.getElementById('finalScore').textContent = G.score;
+      const isRecord = G.score === G.best;
+      document.getElementById('recordBadge').style.display = isRecord? 'inline':'none';
+      document.getElementById('gameOver').style.display='flex';
+    }
+
+    function share(){
+      const text = `Acertei ${G.score} pontos no Jumping Ball Runner!`;
+      if (navigator.share){ navigator.share({title:'Jumping Ball Runner', text}); }
+      else { navigator.clipboard?.writeText(text); alert('Pontuação copiada!'); }
+    }
+
+    // ==== Boot ====
+    function boot(){
+      resize();
+      resetWorld();
+      document.getElementById('best').textContent = `Recorde: ${G.best}`;
+      document.getElementById('score').textContent = `Score: ${G.score}`;
+    }
+    boot();
+  </script>
+</body>
+</html>
