@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Formação em IA Generativa | Digital College</title>
+<meta name="description" content="Formação em IA Generativa (online ou presencial). Do zero à prática: LLMs, RAG, MCP, Multiagentes, Data Pipelines e automações.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0b;              /* preto predominante */
+  --panel:#111214;           /* cards */
+  --muted:#a9abb3;
+  --text:#f5f7fb;
+  --accent:#c7147a;          /* magenta baseado na logo */
+  --accent-2:#ff5cab;        /* brilho complementar */
+  --ok:#33d69f;
+  --warn:#ffd166;
+  --radius:18px;
+  --shadow:0 8px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;scroll-behavior:smooth}
+a{color:inherit;text-decoration:none}
+.container{width:min(1120px,92vw);margin-inline:auto}
+.header{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:saturate(140%) blur(8px);
+  background:linear-gradient(180deg,rgba(0,0,0,.7),rgba(0,0,0,.25));
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
+.header .row{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.logo{display:flex;gap:12px;align-items:center}
+.logo img{height:38px;width:auto}
+.badge{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(199,20,122,.16);border:1px solid rgba(199,20,122,.35);color:#fff}
+.nav{display:flex;gap:22px;align-items:center}
+.nav a{font-weight:600;color:#e9ecf5;opacity:.9}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 20px;border-radius:12px;border:0;cursor:pointer;font-weight:700
+}
+.btn-accent{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;box-shadow:0 8px 24px rgba(199,20,122,.35)
+}
+.btn-ghost{background:#1a1c20;color:#fff;border:1px solid rgba(255,255,255,.08)}
+.hero{
+  position:relative;overflow:hidden;
+  padding:72px 0 40px;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.hero::before{
+  content:"";position:absolute;inset:-40% -20% auto -20%;height:70%;
+  background:radial-gradient(60% 60% at 30% 40%,rgba(199,20,122,.25),transparent 60%),
+             radial-gradient(40% 40% at 80% 20%,rgba(255,92,171,.18),transparent 60%);
+  filter:blur(20px);z-index:0
+}
+.hero h1{font-size:clamp(28px,4.5vw,56px);line-height:1.05;margin:0 0 16px;font-weight:800}
+.hero p.lead{font-size:clamp(16px,2.2vw,20px);color:#d8dbea;max-width:900px;margin:0 0 28px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pill{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:#141519;color:#dfe3f3;font-size:13px}
+.price{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.price .value{font-size:clamp(26px,4vw,40px);font-weight:800}
+.price .mod{font-size:14px;color:var(--muted)}
+
+.section{padding:64px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.grid{display:grid;gap:18px}
+.features{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 6px}
+.card p{margin:6px 0;color:#cfd3e5}
+.icon{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(199,20,122,.25),rgba(255,92,171,.18));
+  border:1px solid rgba(199,20,122,.35);margin-bottom:8px
+}
+
+/* Currículo */
+.accordion{display:grid;gap:14px}
+.acc-item{border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#121317;overflow:hidden}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer}
+.acc-head h4{margin:0;font-size:18px}
+.acc-body{display:none;padding:0 18px 16px}
+.acc-body ul{margin:10px 0 0 18px}
+.acc-body li{margin:6px 0;color:#d6d9e6}
+
+/* Depoimentos */
+.testimonials{grid-template-columns:repeat(3,minmax(0,1fr))}
+.quote{font-style:italic;color:#e8eaf5}
+.stars{letter-spacing:2px;color:var(--warn)}
+
+/* CTA larga */
+.big-cta{
+  background:linear-gradient(180deg,rgba(199,20,122,.14),transparent 65%);
+  border:1px solid rgba(199,20,122,.35)
+}
+
+/* Footer */
+.footer{padding:36px 0;color:#c5c9d6;font-size:14px}
+.footer a{opacity:.9}
+
+/* Responsividade */
+@media (max-width:960px){
+  .features,.testimonials{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  .nav .hide-sm{display:none}
+  .features,.testimonials{grid-template-columns:1fr}
+  .header .row{gap:10px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container row">
+    <div class="logo">
+      <!-- troque o src abaixo para o caminho da sua logo -->
+      <img src="logo-digital.png" alt="Digital College">
+      <span class="badge">Formação em IA Generativa</span>
+    </div>
+    <nav class="nav">
+      <a href="#conteudo" class="hide-sm">Conteúdo</a>
+      <a href="#depoimentos" class="hide-sm">Depoimentos</a>
+      <a href="#faq" class="hide-sm">Dúvidas</a>
+      <a href="#inscricao" class="btn btn-accent">Comprar agora</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Domine IA Generativa: de LLMs a Agentes <span style="color:var(--accent-2)">na prática</span>.</h1>
+    <p class="lead">
+      Formação intensiva (online ou presencial) para construir soluções reais com LLMs, RAG, MCP, automações e agentes.
+      Metodologia mão-na-massa, stacks acessíveis e foco em aplicações de negócio.
+    </p>
+
+    <div class="pills">
+      <span class="pill">Modalidade: Online ou Presencial</span>
+      <span class="pill">Carga horária estendida</span>
+      <span class="pill">Projetos guiados</span>
+      <span class="pill">Ferramentas open-source</span>
+    </div>
+
+    <div class="price">
+      <div class="value">R$ 5.000,00</div>
+      <div class="mod">valor total da formação</div>
+    </div>
+
+    <div class="cta">
+      <a href="#inscricao" class="btn btn-accent">Garantir minha vaga</a>
+      <a href="#conteudo" class="btn btn-ghost">Ver conteúdo programático</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid features">
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>Prático e direto</h3>
+      <p>Você constrói: prompt engineering, integrações por API, RAG, MCP, agentes e automações.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🧠</div>
+      <h3>Fundamentos sólidos</h3>
+      <p>Transformers, embeddings, avaliação de qualidade, segurança e melhores práticas.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🛠️</div>
+      <h3>Stack acessível</h3>
+      <p>LLMs e ferramentas open-source (Anaconda/Colab, LangChain, Llama, Phi, n8n).</p>
+    </div>
+  </div>
+</section>
+
+<section id="conteudo" class="section">
+  <div class="container">
+    <h2 style="margin-top:0">Conteúdo programático</h2>
+    <p style="color:var(--muted)">Currículo completo com quatro módulos e práticas guiadas.</p>
+
+    <div class="accordion" id="acc">
+      <!-- Módulo 01 -->
+      <div class="acc-item">
+        <div class="acc-head">
+          <h4>Módulo 01 – Fundamentos, APIs e IA Generativa</h4>
+          <span>+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li><strong>Introdução à IA Generativa e LLMs:</strong> funcionamento, história e panorama.</li>
+            <li><strong>Ética, Segurança e Impacto Ambiental:</strong> vieses, privacidade, alucinações e conformidade.</li>
+            <li><strong>Engenharia de Prompt e melhores práticas:</strong> clareza, contexto e exemplos.</li>
+            <li><strong>APIs de modelos de linguagem:</strong> autenticação, tokens e integração em apps.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Módulo 02 -->
+      <div class="acc-item">
+        <div class="acc-head">
+          <h4>Módulo 02 – Embeddings, Vetorização e RAG</h4>
+          <span>+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li><strong>Fundamentos de vetorização e embeddings:</strong> vetores densos e busca semântica.</li>
+            <li><strong>Recuperação baseada em contexto:</strong> arquiteturas RAG para respostas atualizadas.</li>
+            <li><strong>Aplicações e avaliação:</strong> precisão, recall, alucinações, latência e custo.</li>
+            <li><strong>MCP – Model Context Protocol:</strong> padrão de contexto para LLMs e integração com RAG.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Módulo 03 -->
+      <div class="acc-item">
+        <div class="acc-head">
+          <h4>Módulo 03 – Workflows e Data Lake</h4>
+          <span>+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li><strong>Automação low-code:</strong> orquestração de processos.</li>
+            <li><strong>Integrações:</strong> planilhas, webhooks e APIs.</li>
+            <li><strong>Data Lake:</strong> organização, governança e segurança.</li>
+            <li><strong>Pipelines ETL/ELT modernos:</strong> Airbyte, Fivetran, dbt e Apache NiFi.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Módulo 04 -->
+      <div class="acc-item">
+        <div class="acc-head">
+          <h4>Módulo 04 – Multiagentes de IA Generativa</h4>
+          <span>+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li><strong>Agentes autônomos e raciocínio encadeado.</strong></li>
+            <li><strong>Segurança e responsabilidade em agentes.</strong></li>
+            <li><strong>Construção de agentes inteligentes com frameworks.</strong></li>
+            <li><strong>Integrações avançadas com bancos e ferramentas externas.</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Práticas e Requisitos -->
+      <div class="acc-item">
+        <div class="acc-head">
+          <h4>Práticas e Requisitos</h4>
+          <span>+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li>Foco em ferramentas e LLMs open-source (Anaconda/Colab, LangChain, Llama, Phi); n8n (custo de hospedagem).</li>
+            <li><strong>Módulo 1:</strong> prática de prompts e integração por API.</li>
+            <li><strong>Módulo 2:</strong> RAG (ler PDFs e perguntar), demonstração de MCP.</li>
+            <li><strong>Módulo 3:</strong> IA Generativa no WhatsApp (n8n).</li>
+            <li><strong>Módulo 4:</strong> agente personalizado (bot).</li>
+            <li><strong>Requisitos:</strong> interesse por tecnologia para perfis de negócio.</li>
+            <li><strong>Outros cursos indicados:</strong> Lógica, Python, Bases de Dados (SQL/CSV/XLS/JSON/XML/Parquet).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="depoimentos" class="section">
+  <div class="container">
+    <h2 style="margin-top:0">O que falam da formação</h2>
+    <div class="grid testimonials">
+      <div class="card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">“Saí do zero em RAG para um chatbot interno rodando em produção. A parte de avaliação tirou a névoa.”</p>
+        <p><strong>Carla M.</strong> — Analista de Dados</p>
+      </div>
+      <div class="card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">“Os módulos de agentes e MCP abriram a cabeça. Muito prático, sem enrolação.”</p>
+        <p><strong>Rafael T.</strong> — Eng. de Software</p>
+      </div>
+      <div class="card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">“Consegui automatizar processos com n8n e reduzir tempo de atendimento em 40%.”</p>
+        <p><strong>Bianca S.</strong> — Operações</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="inscricao" class="section">
+  <div class="container">
+    <div class="card big-cta">
+      <div class="grid" style="grid-template-columns: 1.2fr .8fr; gap:22px">
+        <div>
+          <h2 style="margin:6px 0 6px">Inscreva-se agora</h2>
+          <p style="color:#d5d8e6">Escolha estudar <strong>online</strong> ou <strong>presencial</strong>. Vagas limitadas para garantir acompanhamento próximo.</p>
+          <div class="pills" style="margin:14px 0 18px">
+            <span class="pill">Mentorias em grupo</span>
+            <span class="pill">Projetos aplicados</span>
+            <span class="pill">Material e templates</span>
+          </div>
+          <a class="btn btn-accent" href="#comprar">Comprar por R$ 5.000,00</a>
+          <a class="btn btn-ghost" href="#faq">Tirar dúvidas</a>
+        </div>
+        <div class="card" style="background:#0f1014;border:1px dashed rgba(199,20,122,.35)">
+          <h3 style="margin-top:0">O que você vai aprender</h3>
+          <ul style="margin:6px 0 0 18px;color:#cfd3e5">
+            <li>Desenhar e avaliar prompts eficazes.</li>
+            <li>Integrar LLMs por API com segurança.</li>
+            <li>Construir RAG de ponta a ponta.</li>
+            <li>Orquestrar automações (n8n) e WhatsApp.</li>
+            <li>Aplicar MCP e criar agentes personalizados.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="section">
+  <div class="container">
+    <h2 style="margin-top:0">Perguntas frequentes</h2>
+    <div class="grid" style="grid-template-columns:1fr 1fr;gap:18px">
+      <div class="card">
+        <h3>É online ou presencial?</h3>
+        <p>As duas opções. Você escolhe a modalidade no momento da inscrição.</p>
+      </div>
+      <div class="card">
+        <h3>Precisa saber programar?</h3>
+        <p>Ajuda, mas não é obrigatório. Recomendamos lógica, Python e noções de dados.</p>
+      </div>
+      <div class="card">
+        <h3>Há projetos práticos?</h3>
+        <p>Sim. Cada módulo tem práticas guiadas e um projeto integrador.</p>
+      </div>
+      <div class="card">
+        <h3>Qual é o investimento?</h3>
+        <p>R$ 5.000,00 na formação completa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <div>© <span id="y"></span> Digital College — Todos os direitos reservados.</div>
+    <div>Site escuro com acentos na cor da marca • <a href="https://digitalcollege.com.br/" target="_blank" rel="noopener">digitalcollege.com.br</a></div>
+  </div>
+</footer>
+
+<script>
+/* ano no footer */
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* acordeão */
+document.querySelectorAll('.acc-head').forEach(h=>{
+  h.addEventListener('click',()=>{
+    const body = h.nextElementSibling;
+    const open = body.style.display==='block';
+    document.querySelectorAll('.acc-body').forEach(b=>b.style.display='none');
+    document.querySelectorAll('.acc-head span').forEach(s=>s.textContent='+');
+    if(!open){ body.style.display='block'; h.querySelector('span').textContent='–'; }
+  });
+});
+
+/* âncoras suaves já cobertas por CSS; abaixo, fechar acordeão ao navegar */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',()=>{ /* no-op, reservado para tracking */ });
+});
+</script>
+</body>
+</html>
