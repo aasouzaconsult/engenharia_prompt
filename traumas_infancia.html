@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="infancia.png" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste Diagnóstico – Traumas da Infância</title>
+<meta name="description" content="Autoavaliação orientativa sobre impactos emocionais da infância. Este material é informativo e não substitui diagnóstico profissional.">
+<style>
+:root {
+  --bg: #0b0c10;
+  --panel: #111217;
+  --muted: #9aa0a6;
+  --text: #e6e6e6;
+  --brand: #6ee7ff;
+  --accent: #78fba6;
+  --danger: #ff6b6b;
+  --card: #171923;
+  --border: #232634;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: linear-gradient(145deg, #0a0b0f 0%, #0d1020 100%);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, rgba(13,16,32,.95) 0%, rgba(13,16,32,.7) 60%, rgba(13,16,32,0) 100%);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.header-inner {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 24px;
+}
+.brand-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--brand), #3ecbff);
+  box-shadow: 0 0 24px rgba(110,231,255,.65);
+}
+h1 {
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 0; letter-spacing: .2px;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: .95rem;
+}
+.card {
+  background: linear-gradient(180deg, #141726, #101321);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 820px) {
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: #0b1220; background: linear-gradient(180deg, #e9fbff, #c9f3ff);
+  border: 1px solid #97e8ff;
+  padding: 8px 12px; border-radius: 999px; font-weight: 600; font-size: .9rem;
+}
+.progress-wrap { margin: 10px 0 0; }
+.progress-bar {
+  width: 100%; height: 10px; border-radius: 999px;
+  background: #1b2030; overflow: hidden; border: 1px solid #2b3145;
+}
+.progress-bar span {
+  display: block; height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+  transition: width .3s ease;
+}
+
+.header-inner{
+  display:grid;
+  grid-template-columns:auto 1fr;     /* logo | títulos */
+  align-items:center;
+  gap:16px;
+  padding:14px 24px;
+}
+
+/* área do logo */
+.brand{
+  display:flex; align-items:center;
+  min-width:0;
+}
+.logo{
+  display:block;
+  height: clamp(28px, 6vw, 48px);     /* escala responsiva */
+  width:auto;
+  object-fit:contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.6)); /* realça no fundo escuro */
+  image-rendering:auto;
+}
+
+/* título e subtítulo */
+.title-wrap{ min-width:0; }
+.title-wrap h1{
+  margin:0;
+  font-size: clamp(18px, 3vw, 28px);
+  line-height:1.15;
+}
+.subtitle{
+  color: var(--muted);
+  font-size:.95rem;
+  max-width: 70ch;                    /* evita linhas muito longas */
+  text-wrap: balance;                 /* melhor quebra */
+}
+
+/* mobile: empilha e centraliza */
+@media (max-width: 520px){
+  .header-inner{
+    grid-template-columns:1fr;
+    gap:10px;
+    text-align:center;
+  }
+  .brand{ justify-content:center; }
+}
+
+
+.question {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.qtext { margin: 0 0 10px; font-weight: 600; }
+.options { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+.option {
+  position: relative;
+  border: 1px solid #2a2f40;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .05s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.option:hover { transform: translateY(-1px); border-color: #3b435a; }
+input[type="radio"] { display: none; }
+input[type="radio"]:checked + .option {
+  border-color: #4ac6ff;
+  box-shadow: 0 0 0 2px rgba(74,198,255,.25) inset;
+}
+.actions {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;
+}
+.btn {
+  border: 1px solid #2a2f40; color: var(--text); background: #141a28;
+  padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600;
+}
+.btn.primary { background: linear-gradient(90deg, #1e90ff, #00d4ff); color: #08111f; border-color: transparent; }
+.btn.danger { background: #2a0f15; border-color: #591c26; color: #ff9aa9; }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+.small { font-size: .9rem; color: var(--muted); }
+.result-card .score { font-size: clamp(28px, 5vw, 42px); font-weight: 800; }
+.result-level { font-weight: 700; font-size: 1.1rem; }
+hr.sep { border: none; border-top: 1px solid #262b3f; margin: 18px 0; }
+footer {
+  color: var(--muted); font-size: .9rem; margin: 24px 0; text-align: center;
+}
+kbd {
+  background: #0f1424; border: 1px solid #323b55; border-bottom-width: 2px;
+  padding: 2px 6px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.warning { color: #ffd6a0; }
+.success { color: #afffd1; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner container">
+      <div class="brand-dot" aria-hidden="true"></div>
+      <div class="brand">
+        <img
+          src="thaiscorreia.png"
+          srcset="thaiscorreia.png 1x, logo@2x.png 2x"
+          alt="Thais Correia"
+          class="logo"
+        />
+      </div>
+      <div>
+        <h1>Teste Diagnóstico – Traumas da Infância</h1>
+        <div class="subtitle">Autoavaliação orientativa • Resultado imediato e perguntas complementares.</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="card">
+      <div class="grid grid-2">
+        <div class="field">
+          <label class="label" for="nome">Seu nome (opcional):</label>
+          <input id="nome" placeholder="Digite seu nome" />
+          <div class="small">Fica somente no seu dispositivo ao imprimir/salvar.</div>
+        </div>
+        <div>
+          <div class="badge" title="Escala de resposta">Escala 1–5</div>
+          <p class="small">1 = Nunca • 2 = Raramente • 3 = Às vezes • 4 = Frequentemente • 5 = Sempre</p>
+          <p class="small">Este material é informativo e não substitui avaliação clínica. Evite usar como rótulo; use como ponto de partida para cuidado.</p>
+        </div>
+        <div>
+          <div class="small">Progresso</div>
+          <div class="progress-wrap">
+            <div class="progress-bar"><span id="progress"></span></div>
+          </div>
+          <div class="small" id="progressText">0/0 respondidas</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="questions" class="grid" style="margin-top:16px;"></div>
+
+    <section id="resultSection" class="card hidden" style="margin-top:16px;">
+      <div class="result-card">
+        <div class="score" id="scoreValue">—</div>
+        <div class="result-level" id="scoreLevel">Preencha o teste para ver seu resultado</div>
+        <p id="scoreMessage" class="small"></p>
+        <hr class="sep">
+        <div class="field">
+          <label class="label">1) Qual foi a questão que mais te chamou atenção?</label>
+          <textarea id="p1"></textarea>
+        </div>
+        <div class="field">
+          <label class="label">2) Quando você se compromete a entrar em ação?</label>
+          <textarea id="p2"></textarea>
+        </div>
+        <div class="field">
+          <label class="label">3) Por que essa sessão de hoje valeu a pena?</label>
+          <textarea id="p3"></textarea>
+        </div>
+        <p class="small warning">Importante: este teste não é diagnóstico. Caso o resultado sinalize sofrimento relevante, considere acompanhamento profissional.</p>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="btn primary" id="calcBtn" type="button">Calcular resultado</button>
+      <button class="btn" id="printBtn" type="button">Imprimir/Salvar PDF</button>
+      <button class="btn danger" id="clearBtn" type="button">Limpar respostas</button>
+    </div>
+
+    <section id="finalSection" class="card hidden" style="margin-top:16px;">
+     <!-- <h2 style="margin-top:0;">Perguntas complementares (para todos)</h2> -->
+     <!-- <p class="small">Marque os itens que se aplicam a você. Estes itens não entram no escore, mas ajudam a compor o contexto.</p> -->
+      <div id="finalQuestions" class="grid"></div>
+      <div class="actions">
+        <button class="btn" id="copySummaryBtn">OK</button> 
+      </div>
+    </section>
+    
+
+    <footer>
+      <p>Feito por Thais Correia.</p>
+    </footer>
+  </main>
+
+<script>
+// === Config gerada a partir da planilha ===
+const CONFIG = {"questions": ["Senti que minhas necessidades emocionais (afeto, atenção, segurança) não foram atendidas na infância", "Lembro de ter me sentido rejeitado(a) ou não desejado(a)", "Fui criticado(a) de forma dura ou comparado(a) frequentemente com outras crianças", "Experimentei abandono físico ou emocional (pais ausentes, negligência, afastamento)", "Passei por situações de violência ou abuso (físico, verbal, emocional)", "Muitas vezes precisei “crescer rápido” e assumir responsabilidades além da minha idade", "Tive medo constante de errar ou de não ser bom/boa o suficiente para agradar meus cuidadores", "Tenho dificuldade em confiar plenamente nas pessoas", "Sinto insegurança ou medo de rejeição nos meus relacionamentos", "Costumo me autossabotar quando estou perto de conquistar algo importante", "Tenho crises emocionais intensas diante de críticas ou frustrações", "Evito me expor ou falar em público por medo de julgamento", "Tenho dificuldade em sustentar limites claros (dizer “não” ou me posicionar)", "Me sinto frequentemente inferior ou incapaz em comparação aos outros", "Repito padrões de relacionamentos desequilibrados ou dolorosos", "Costumo me isolar quando me sinto ferido(a) ou inseguro(a)", "Busco perfeição em tudo que faço para evitar críticas ou rejeição", "Sinto necessidade de controlar situações e pessoas para não me sentir vulnerável", "Tenho medo de depender dos outros, mas ao mesmo tempo sinto necessidade de aprovação", "Evito conflitos, mesmo quando isso me prejudica", "Uso o humor, a racionalização ou a frieza para esconder minha dor", "Sinto que preciso “ser forte o tempo todo” e raramente permito que vejam minha vulnerabilidade", "Acredito que não sou digno(a) de amor pleno e incondicional", "Carrego uma sensação de que “sempre falta algo em mim”", "Tenho medo de mostrar quem realmente sou, por achar que não vou ser aceito(a)", "Me culpo por erros do passado ou por situações que vivi na infância", "Acho difícil reconhecer minhas conquistas ou me sentir satisfeito(a) comigo mesmo(a)", "Muitas vezes sinto que minha vida está travada ou limitada por algo invisível", "Tenho a sensação de que preciso me esforçar demais para ser valorizado(a)", "Acredito que minha história me define e que é difícil mudar meu destino"], "likert": [{"value": 1, "label": "Nunca"}, {"value": 2, "label": "Raramente"}, {"value": 3, "label": "Às vezes"}, {"value": 4, "label": "Frequentemente"}, {"value": 5, "label": "Sempre"}], "final_questions": ["Obrigada por realizar o teste!"], "score_bands": [{"min": 0, "max": 20, "title": "0–20 pontos → Baixo impacto ", "message": "O que isso significa:<br><b>Você provavelmente teve uma infância relativamente segura ou encontrou recursos para lidar com os desafios.</b><br>Sua autoimagem tende a ser positiva e você consegue se expressar e se relacionar com equilíbrio.<br><br><b>Sinais comuns:</b><ul><li>Ocasional dificuldade de se posicionar.</li><li>Pequenos gatilhos emocionais, mas de rápida recuperação.</li><li>Relacionamentos saudáveis, mas tendência a evitar grandes desafios.</li></ul><br><b>Plano de ação sugerido:</b><ul><li>Praticar escrita terapêutica (journaling).</li><li>Exercitar comunicação assertiva no dia a dia.</li><li>Fortalecer segurança emocional em treinamentos/mentoria.</li></ul>"}, {"min": 21, "max": 45, "title": "21–45 pontos → Impacto moderado", "message": "O que isso significa:<br><b>Algumas experiências da infância deixaram marcas que influenciam diretamente sua vida adulta.</b><br>Ciclos de insegurança, medo de rejeição e autocrítica podem estar presentes, principalmente em momentos de pressão.<br><br><b>Sinais comuns:</b><ul><li>Medo de errar ou decepcionar.</li><li>Autocrítica excessiva.</li><li>Tendência a evitar exposição ou mudanças.</li><li>Sensibilidade a críticas.</li><li>Sensação de estar sendo 'segurado por algo'.</li></ul><br><b>Plano de ação sugerido:</b><ul><li>Identificar crenças limitantes da infância.</li><li>Usar ferramentas emocionais para reprogramação de pensamentos.</li><li>Assumir pequenos desafios de exposição.</li><li>Buscar apoio em mentoria/terapia para ressignificação.</li></ul>"}, {"min": 46, "max": 80, "title": "46–80 pontos → Alto impacto", "message": "O que isso significa:<br><b>Experiências dolorosas ou negligências emocionais moldaram fortemente sua forma de sentir e agir.</b><br>É provável que feridas não tratadas estejam causando ciclos repetitivos e bloqueios.<br><br><b>Sinais comuns:</b><ul><li>Medo constante de rejeição ou abandono.</li><li>Bloqueio ao falar em público ou se expor.</li><li>Relacionamentos desequilibrados (dependência, abuso, controle).</li><li>Autocrítica extrema.</li><li>Reações emocionais desproporcionais.</li></ul><br><b>Plano de ação sugerido:</b><ul><li>Iniciar processo profundo de cura emocional (oração, mentoria, terapia).</li><li>Trabalhar reconstrução da identidade e autopercepção.</li><li>Aprender posicionamento com segurança e limites saudáveis.</li><li>Restaurar relacionamentos e encerrar ciclos tóxicos.</li><li>Praticar autocompaixão e fortalecer espiritualidade.</li></ul>"}, {"min": 81, "max": 150, "title": "Muito elevado", "message": "Sinais intensos de sofrimento emocional acumulado. Considere buscar avaliação clínica e um acompanhamento estruturado."}]};
+
+// Render questions
+const container = document.getElementById('questions');
+const progressEl = document.getElementById('progress');
+const progressText = document.getElementById('progressText');
+const total = CONFIG.questions.length;
+
+function makeOption(name, value, label) {
+  const id = `${name}_${value}`;
+  return `
+    <label for="${id}">
+      <input type="radio" name="${name}" id="${id}" value="${value}">
+      <div class="option">${label} <div class="small" style="margin-top:4px;opacity:.8">(${
+        value
+      })</div></div>
+    </label>
+  `;
+}
+
+function renderQuestions() {
+  const blocks = CONFIG.questions.map((q, idx) => {
+    const name = `q_${idx+1}`;
+    const opts = CONFIG.likert.map(o => makeOption(name, o.value, o.label)).join('');
+    return `
+      <div class="question" data-index="${idx}">
+        <p class="qtext">${idx+1}. ${q}</p>
+        <div class="options">${opts}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = blocks.join('');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Array.from(document.querySelectorAll('.question')).filter(q => 
+    q.querySelector('input[type="radio"]:checked')
+  ).length;
+  const pct = total ? Math.round((answered/total)*100) : 0;
+  progressEl.style.width = pct + '%';
+  progressText.textContent = `${answered}/${total} respondidas`;
+}
+
+document.addEventListener('change', e => {
+  if (e.target && e.target.matches('input[type="radio"]')) updateProgress();
+});
+
+renderQuestions();
+
+// Calculate score
+const calcBtn = document.getElementById('calcBtn');
+const resultSection = document.getElementById('resultSection');
+const scoreValue = document.getElementById('scoreValue');
+const scoreLevel = document.getElementById('scoreLevel');
+const scoreMessage = document.getElementById('scoreMessage');
+
+calcBtn.addEventListener('click', () => {
+  let sum = 0;
+  let missing = [];
+  document.querySelectorAll('.question').forEach((q, i) => {
+    const chosen = q.querySelector('input[type="radio"]:checked');
+    if (chosen) sum += parseInt(chosen.value, 10);
+    else missing.push(i+1);
+  });
+  if (missing.length) {
+    alert('Responda todas as perguntas antes de calcular. Faltam: ' + missing.join(', '));
+    return;
+  }
+  scoreValue.textContent = sum;
+  // Find band
+  const band = CONFIG.score_bands.find(b => sum >= b.min && sum <= b.max);
+  if (band) {
+    scoreLevel.textContent = band.title;
+    scoreMessage.innerHTML = band.message;
+  } else {
+    scoreLevel.textContent = 'Resultado fora da faixa configurada';
+    scoreMessage.textContent = 'Ajuste as faixas de pontuação no JSON embutido.';
+  }
+  resultSection.classList.remove('hidden');
+  // Always show final questions after result
+  renderFinalQuestions();
+  document.getElementById('finalSection').classList.remove('hidden');
+  window.scrollTo({ top: resultSection.offsetTop - 20, behavior: 'smooth' });
+});
+
+// Final questions (checkbox list)
+function renderFinalQuestions() {
+  const fq = CONFIG.final_questions || [];
+  const wrap = document.getElementById('finalQuestions');
+  if (!fq.length) {
+    wrap.innerHTML = '<p class="small">Nenhuma pergunta complementar configurada.</p>';
+    return;
+  }
+  wrap.innerHTML = fq.map((txt, i) => `
+    <label class="question" style="display:block;">
+      <input type="checkbox" id="fq_${i}">
+      <span class="qtext" style="font-weight:500">${txt}</span>
+    </label>
+  `).join('');
+}
+
+// Copy a plain-text summary
+document.getElementById('copySummaryBtn').addEventListener('click', () => {
+  const sum = scoreValue.textContent;
+  if (!sum || sum === '—') {
+    alert('Calcule o resultado primeiro.');
+    return;
+  }
+  const level = scoreLevel.textContent;
+  const checks = Array.from(document.querySelectorAll('#finalQuestions input[type="checkbox"]'))
+    .map((el, i) => el.checked ? `- ${CONFIG.final_questions[i]}` : null)
+    .filter(Boolean)
+    .join('\n');
+  const txt = `Resultado do Teste de Traumas\nEscore: ${sum}\nNível: ${level}\n\nItens complementares marcados:\n${checks || '(nenhum)'}`;
+  navigator.clipboard.writeText(txt).then(() => {
+    alert('Resumo copiado para a área de transferência.');
+  }).catch(() => alert('Não foi possível copiar automaticamente.'));
+});
+
+// Utilities
+document.getElementById('clearBtn').addEventListener('click', () => {
+  location.reload();
+});
+
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
