@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Trabalho Final – Python para Análise de Dados • Microdados INEP</title>
+<meta name="description" content="Página do trabalho final da disciplina Python para Análise de Dados. Escolha uma base de microdados do INEP, explore ao máximo e apresente achados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0c10; --panel:#111217; --card:#161923; --muted:#a4a7b0; --text:#e8e9ed;
+    --brand:#7cf5d2; --accent:#8ab4ff; --chip:#212636; --border:#23283a; --warn:#ffd166;
+    --danger:#ff6b6b; --ok:#8cff9f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:linear-gradient(180deg,var(--bg),#0e1016 40%,#0b0c10);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:grid;gap:16px;padding:24px;border:1px solid var(--border);background:radial-gradient(1200px 400px at 20% -10%,rgba(124,245,210,.1),transparent 50%),radial-gradient(800px 400px at 100% 0,rgba(138,180,255,.12),transparent 40%),var(--panel);border-radius:18px}
+  .kicker{letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;font-size:.78rem}
+  h1{font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1.15;margin:0}
+  .lead{font-size:clamp(1rem,1.8vw,1.1rem);color:#d7d9e1}
+  .due{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .pill{background:var(--chip);border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-weight:600}
+  .countdown{font-variant-numeric:tabular-nums;background:#0f1321;border:1px dashed #2a3351}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .btn{appearance:none;border:none;background:linear-gradient(90deg,var(--brand),#aef2ff);color:#022; padding:12px 16px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.secondary{background:#212941;color:#bcd6ff;border:1px solid #324161}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  section{margin-top:28px}
+  .card{grid-column: span 12; background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+  @media(min-width:720px){.card.half{grid-column:span 6}}
+  @media(min-width:980px){.card.third{grid-column:span 4}}
+  .card h3{margin:.2rem 0 0.4rem;font-size:1.15rem}
+  .muted{color:var(--muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:var(--chip);border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:.9rem;cursor:pointer;user-select:none}
+  .chip.active{outline:2px solid var(--accent);}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input[type="search"], select{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--border);background:#0f1220;color:var(--text)}
+  .dataset{border-top:1px dashed var(--border);padding-top:12px;margin-top:12px}
+  .dataset .title{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .tag{font-size:.75rem;background:#1a2030;color:#a6b6ff;border:1px solid #26304a;padding:4px 8px;border-radius:999px}
+  .small{font-size:.92rem}
+  .list{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
+  .item{grid-column:span 12;background:#111626;border:1px solid var(--border);border-radius:14px;padding:16px}
+  @media(min-width:800px){.item{grid-column:span 6}}
+  @media(min-width:1100px){.item{grid-column:span 4}}
+  .item h4{margin:0 0 4px;font-size:1.02rem}
+  .item p{margin:.2rem 0 .6rem}
+  .item .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .item .meta span{color:#cfe3ff;background:#0f1526;border:1px solid #243359;padding:4px 8px;border-radius:8px;font-size:.78rem}
+  .footer{margin-top:32px;color:#9aa7bd;font-size:.9rem}
+  .kbd{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0d1321;border:1px solid #293255;border-radius:8px;padding:2px 6px}
+  .warn{color:#111;background:linear-gradient(90deg,#ffe39a,#ffd166);border:1px solid #e6c56c;border-radius:12px;padding:10px 12px}
+  .ok{color:#072;border:1px solid #1d5b3a;background:#0e251a;border-radius:10px;padding:8px 10px}
+  .copy{cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="kicker">Python para Análise de Dados • Trabalho Final de Unidade</div>
+      <h1>Exploração dos Microdados do INEP</h1>
+      <p class="lead">Em equipes, escolham uma base abaixo (ENEM, Censo(s), SAEB, ENADE, ENCCEJA) e realizem uma <strong>Análise Exploratória de Dados (EDA)</strong> completa: qualidade dos dados, padrões, anomalias, curiosidades e <em>insights</em> que ajudem a contar uma história com evidências.</p>
+      <div class="due">
+        <span class="pill">Entrega: <strong>28/08/2025</strong> (PDF + código reprodutível)</span>
+        <span class="pill countdown" id="countdown">tempo restante…</span>
+        <span class="pill">Apresentação: <strong>opcional</strong></span>
+      </div>
+      <div class="cta">
+        <button class="btn copy" id="copyTemplate">📋 Copiar template de EDA (Jupyter)</button>
+        <a class="btn secondary" href="#fontes">ℹ️ Sobre as fontes</a>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="card half">
+        <h3>Requisitos mínimos</h3>
+        <ul class="small">
+          <li>Data prep: avaliação de <strong>valores ausentes</strong>, tipos, duplicatas, outliers, consistência temporal/espacial.</li>
+          <li>EDA visual: distribuições, comparações, correlações; gráficos adequados e legibilidade.</li>
+          <li>Relato claro: contexto, perguntas investigativas, achados, limitações e próximos passos.</li>
+          <li>Ética e LGPD: dados são <em>pseudonimizados</em>; não tente reidentificar indivíduos.</li>
+          <li>Compartilhe no seu Linkedin</li>
+        </ul>
+      </div>
+      <div class="card half">
+        <h3>Ideias de exploração</h3>
+        <ul class="small">
+          <li>Qualidade: dicionário vs. dados (codificações, ranges, códigos especiais).</li>
+          <li>Tempo: séries históricas, quebras de tendência, efeitos de políticas públicas.</li>
+          <li>Espaço: mapas por UF/município (taxas, notas, matrículas). 
+          </li>
+          <li>Equidade: recortes por sexo, raça/cor, rede, localização e nível socioeconômico.</li>
+          <li>Modelagem: clusters, regressões simples, árvores interpretáveis (com parcimônia).</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="row" style="gap:12px">
+          <div style="flex:1 1 260px"><input id="q" type="search" placeholder="Buscar bases por nome, tema, palavra-chave…" aria-label="Buscar"></div>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <div class="card" id="fontes">
+        <h3>Sobre as fontes</h3>
+        <p class="small">Os <strong>microdados do INEP</strong> são conjuntos detalhados sobre avaliações e pesquisas educacionais (ENEM, SAEB, ENADE, Censos). Em geral vêm em <span class="kbd">.zip</span> com <span class="kbd">CSV</span> (delimitador <span class="kbd">|</span>), <em>Leia-me</em>, <em>Dicionário de Dados</em> e questionários. Desde 2018, o INEP adequa a divulgação à <strong>LGPD</strong>, reduzindo risco de identificação direta.</p>
+        <div class="warn small">Dica: verifique o <em>Leia-me</em> e o <em>Dicionário</em> da edição escolhida para importar corretamente (codificações, tipos, pesos, amostras, agregações).</div>
+      </div>
+
+      <div class="card third">
+        <h3>Entrega</h3>
+        <ul class="small">
+          <li>Repositório ou pasta com notebook(s), scripts e <span class="kbd">requirements.txt</span>.</li>
+          <li>Relatório (PDF/HTML) com narrativa, visualizações e achados.</li>
+          <li>Link para reprodutibilidade/teste.</li>
+        </ul>
+      </div>
+      <div class="card third">
+        <h3>Critérios de avaliação</h3>
+        <ul class="small">
+          <li><strong>Profundidade</strong> da exploração e justificativas.</li>
+          <li><strong>Qualidade</strong> dos gráficos e interpretação.</li>
+          <li><strong>Rigor</strong> metodológico (limpeza, checagens, replicabilidade).</li>
+          <li><strong>Clareza</strong> e storytelling com evidências.</li>
+        </ul>
+      </div>
+      <div class="card third">
+        <h3>Boas práticas</h3>
+        <ul class="small">
+          <li>Use <span class="kbd">pandas</span>, <span class="kbd">pyreadr</span>/<span class="kbd">pyarrow</span> quando apropriado; leia em chunks para arquivos grandes.</li>
+          <li>Documente decisões (códigos especiais, filtros, pesos amostrais).</li>
+          <li>Salve artefatos intermediários (parquet/feather) para velocidade.</li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        <p>Página criada para fins acadêmicos. Bases de dados: INEP – Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira. © 2025</p>
+      </div>
+    </section>
+  </div>
+
+<script>
+// ===================== DATASETS =====================
+const DATASETS = [
+  {
+    name: "ENEM – Exame Nacional do Ensino Médio",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+    about: "Provas, gabaritos, notas, itens e questionários dos inscritos.",
+    category: "Avaliações e Exames",
+    tags: ["notas","itens","questionários","médio"]
+  },
+  {
+    name: "SAEB – Sistema de Avaliação da Educação Básica",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/saeb",
+    about: "Avaliações em larga escala; inclui INSE e Formação Docente.",
+    category: "Avaliações e Exames",
+    tags: ["língua portuguesa","matemática","inser","fundamental","médio"]
+  },
+  {
+    name: "Censo Escolar da Educação Básica",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-escolar",
+    about: "Cadastro anual de escolas, matrículas, turmas, docentes e rendimento.",
+    category: "Censos",
+    tags: ["escolas","matrículas","docentes","EJA","educação básica"]
+  },
+  {
+    name: "Censo da Educação Superior",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior",
+    about: "Informações sobre IES, cursos, docentes e alunos no ensino superior.",
+    category: "Censos",
+    tags: ["IES","graduação","curso","docente","aluno"]
+  },
+  {
+    name: "ENADE – Exame Nacional de Desempenho dos Estudantes",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enade",
+    about: "Desempenho de concluintes e questionários do estudante.",
+    category: "Avaliações e Exames",
+    tags: ["qualidade","cursos","Sinaes","superior"]
+  },
+  {
+    name: "ENCCEJA – Certificação de Competências de Jovens e Adultos",
+    url: "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/encceja",
+    about: "Microdados das edições do Encceja.",
+    category: "Avaliações e Exames",
+    tags: ["jovens","adultos","certificação"]
+  }
+];
+
+const CATEGORIES = ["Todos","Censos","Avaliações e Exames"];
+
+// ===================== RENDER =====================
+const chips = document.getElementById('chips');
+const list  = document.getElementById('list');
+const q     = document.getElementById('q');
+let activeCategory = "Todos";
+
+function renderChips(){
+  chips.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const el = document.createElement('div');
+    el.className = 'chip' + (cat===activeCategory?' active':'');
+    el.textContent = cat;
+    el.onclick = ()=>{activeCategory=cat; filter(); renderChips();};
+    chips.appendChild(el);
+  });
+}
+
+function renderItems(items){
+  list.innerHTML = '';
+  items.forEach(d=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="title">
+        <h4>${d.name}</h4>
+      </div>
+      <p class="muted small">${d.about}</p>
+      <div class="meta">
+        <span>${d.category}</span>
+        ${d.tags.slice(0,3).map(t=>`<span>${t}</span>`).join('')}
+      </div>
+      <p style="margin-top:10px"><a href="${d.url}" target="_blank" rel="noopener">➡️ Acessar página de microdados</a></p>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function filter(){
+  const term = q.value.trim().toLowerCase();
+  const res = DATASETS.filter(d=>{
+    const byCat = (activeCategory==='Todos') || d.category===activeCategory;
+    const blob  = (d.name + ' ' + d.about + ' ' + d.tags.join(' ')).toLowerCase();
+    const byQ   = !term || blob.includes(term);
+    return byCat && byQ;
+  });
+  renderItems(res);
+}
+
+q.addEventListener('input', filter);
+renderChips();
+filter();
+
+// ===================== COUNTDOWN =====================
+function updateCountdown(){
+  // 28/08/2025 23:59:59 America/Sao_Paulo (UTC-03)
+  const target = new Date('2025-08-29T02:59:59Z'); // 23:59:59 BRT = 02:59:59 UTC
+  const now = new Date();
+  const diff = Math.max(0, target - now);
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('countdown').textContent = `Faltam ${String(d).padStart(2,'0')}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ===================== COPY EDA TEMPLATE =====================
+const TEMPLATE = `# Template rápido de EDA (ajuste caminhos/nomes)\n\nimport os, pandas as pd, numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom pathlib import Path\n\n# 1) Carregamento (edite separador e encoding conforme o dicionário do INEP)\n# Ex.: separador '|' e decimal '.'; use chunks se o arquivo for muito grande\nPATH = Path('dados/microdados.csv')\ndf = pd.read_csv(PATH, sep='|', low_memory=False, encoding='latin-1')\n\n# 2) Visão geral\nprint(df.shape)\nprint(df.head())\nprint(df.info())\n\n# 3) Qualidade dos dados\nnulls = df.isna().sum().sort_values(ascending=False)\nprint(nulls.head(20))\n\n# 4) Tipos/categorias\nfor col in df.select_dtypes(include='object').columns:\n    if df[col].nunique() < 20:\n        print(f"\n{col}: {df[col].value_counts(dropna=False).to_string()}")\n\n# 5) Estatísticas descritivas\nprint(df.describe(include='all', datetime_is_numeric=True))\n\n# 6) Exemplo de limpeza de códigos especiais (ajuste conforme dicionário)\n# df['TP_SEXO'] = df['TP_SEXO'].map({'M':'Masculino','F':'Feminino'})\n\n# 7) Visualizações rápidas\nnum_cols = df.select_dtypes(include=np.number).columns[:6]\nfor c in num_cols:\n    plt.figure(); df[c].dropna().hist(bins=30); plt.title(f"Distribuição: {c}"); plt.xlabel(c); plt.ylabel('freq')\nplt.show()\n\n# 8) Correlações (numéricas)\nplt.figure(); sns.heatmap(df[num_cols].corr(numeric_only=True), annot=False); plt.title('Correlação (amostra)'); plt.show()\n\n# 9) Amostra salva para protótipos\n(df.sample(5000, random_state=42) if len(df)>5000 else df).to_parquet('dados/amostra.parquet', index=False)\n`; 
+
+document.getElementById('copyTemplate').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(TEMPLATE);
+    const btn = document.getElementById('copyTemplate');
+    const txt = btn.textContent;
+    btn.textContent = '✅ Template copiado!';
+    setTimeout(()=>btn.textContent = txt, 1800);
+  }catch(err){ alert('Não foi possível copiar automaticamente. Role até o final e copie manualmente.'); }
+});
+</script>
+</body>
+</html>
