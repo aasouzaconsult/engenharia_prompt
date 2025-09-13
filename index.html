@@ -374,6 +374,9 @@
                             <div class="prompt-box">Alex´s favourite type of foods include: Burgers, Pizza, Fries, Chocolate. What restaurant should I take Alex to in Dubai this weekend?</div>
                             <div class="prompt-box">Crie um plano de aula sobre a célula, similar ao exemplo abaixo: Exemplo: Plano de aula sobre a célula: Introdução (10 minutos), Atividade prática (30 minutos), Discussão em grupo (20 minutos), Conclusão (10 minutos).</div>
                         </li>
+                        <li><strong>Auto-Prompting (Self-Prompting):</strong> A ideia é simples: em vez de você escrever diretamente o prompt final, você pede para a própria LLM gerar o prompt ideal que seria usado para resolver a tarefa. Em qualquer LLM, peça por exemplo: <br> 
+                            <div class="prompt-box">Crie um prompt detalhado para analisar os riscos e oportunidades de abrir uma filial de uma cafeteria em São Paulo, considerando concorrência, custos fixos e perfil do consumidor</div>
+                        </li>
                         <li><strong>Chain-of-Thought (CoT) Prompting:</strong> Introduzido em Wei et al. (2022), a solicitação de cadeia de pensamento (CoT) permite recursos de raciocínio complexos por meio de etapas intermediárias de raciocínio. Você pode combiná-lo com solicitações rápidas para obter melhores resultados em tarefas mais complexas que exigem raciocínio antes de responder. <a href="https://arxiv.org/abs/2201.11903" target="_blank">Artigo</a>. Essa é a técnica utilizada nas LLMs que "pensam"! (Exemplo: ChatGPT o1 e o3-mini, DeepSeek)<br>
                             <div class="prompt-box">Os números ímpares neste grupo somam um número par: 4, 8, 9, 15, 12, 2, 1.
 R: Somando todos os números ímpares (9, 15, 1) dá 25. A resposta é falsa.<br>
@@ -561,6 +564,7 @@ Narre o pensamento dos especialistas!</div>
 
 </body>
 </html>
+
 
 
 
