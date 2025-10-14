@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer: Softmax, Temperatura e Random Sampling</title>
+  <style>
+    :root {
+      --azul: #007bff;
+      --preto: #111;
+      --cinza: #f8f9fa;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: white;
+      color: var(--preto);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--azul);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      color: var(--azul);
+      text-align: center;
+    }
+
+    section {
+      background: var(--cinza);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      margin: 1rem auto;
+      border-radius: 10px;
+    }
+
+    .highlight {
+      color: var(--azul);
+      font-weight: bold;
+    }
+
+    .interactive {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    button {
+      background: var(--azul);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .output {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid #ddd;
+      color: #444;
+    }
+
+    a {
+      color: var(--azul);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Transformer: Softmax, Temperatura e Random Sampling</h1>
+  <p>Visualização e explicação completa do processo interno de geração de texto</p>
+</header>
+
+<main>
+  <section>
+    <h2>1. Input Vocab e Logits</h2>
+    <p>
+      A coluna <strong>Vocab (V)</strong> mostra as palavras candidatas: <code>who, where, why, what, how</code>.<br>
+      A coluna <strong>Logit (Z)</strong> mostra o valor cru de ativação que o modelo gera antes de converter em probabilidades.<br>
+      Por exemplo: <em>why</em> tem o maior logit (5,20), então tende a ser mais provável.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Temperatura (T)</h2>
+    <p>
+      A <span class="highlight">temperatura</span> controla a aleatoriedade.
+      Temperaturas baixas (T < 1) tornam o modelo mais “decidido”: amplificam as diferenças entre logits.<br>
+      Temperaturas altas (T > 1) tornam o modelo mais “criativo”: achatam as diferenças e aproximam as probabilidades.
+    </p>
+    <p>Matematicamente, cada logit é dividido pela temperatura: Z' = Z / T</p>
+    <p>Exemplo com T = 2.9:</p>
+    <ul>
+      <li>why → 0.41</li>
+      <li>what → 0.20</li>
+      <li>who → 0.16</li>
+      <li>how → 0.14</li>
+      <li>where → 0.10</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Softmax</h2>
+    <p>
+      A função <span class="highlight">Softmax</span> converte os valores ajustados (logits) em probabilidades normalizadas:
+      <br>\(P_i = e^{Z_i/T} / \sum e^{Z_j/T}\)
+      <br>Assim, todas as probabilidades somam 1.0.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. Random Number (r)</h2>
+    <p>
+      O modelo gera um número aleatório entre 0 e 1 (<code>r</code>) e verifica em qual faixa cumulativa o número cai.
+      Por exemplo:
+    </p>
+    <table>
+      <tr><th>Palavra</th><th>Faixa</th></tr>
+      <tr><td>why</td><td>0,00 – 0,41</td></tr>
+      <tr><td>what</td><td>0,41 – 0,61</td></tr>
+      <tr><td>who</td><td>0,61 – 0,77</td></tr>
+      <tr><td>how</td><td>0,77 – 0,91</td></tr>
+      <tr><td>where</td><td>0,91 – 1,00</td></tr>
+    </table>
+    <p>
+      Se o número <code>r = 0.5</code>, a palavra escolhida será <strong>“what”</strong>.<br>
+      Cada execução gera um novo número aleatório — e, portanto, resultados diferentes respeitando as probabilidades.
+    </p>
+  </section>
+
+  <section>
+    <h2>5. O papel do Random no algoritmo</h2>
+    <p>
+      No ciclo interno de geração do modelo, o número aleatório é sempre gerado para cada token.<br>
+      O processo é: <br>
+      <strong>Softmax → Random → Escolha → Próximo token → Recalcula tudo</strong>.
+    </p>
+    <p>
+      Esse sorteio ponderado é o que faz o texto parecer humano e imprevisível.<br>
+      Sem ele, o modelo seria totalmente determinístico e repetitivo.
+    </p>
+  </section>
+
+  <section>
+    <h2>6. Ciclo Auto-Regressivo</h2>
+    <p>
+      Cada token escolhido é realimentado no modelo, que calcula novos logits e reinicia o processo.
+    </p>
+    <img src="A_flowchart_in_digital_illustration_format_depicts.png" alt="Fluxo do Transformer com Softmax, Temperatura e Random Sampling">
+  </section>
+
+  <section class="interactive">
+    <h2>Experimente o sorteio de palavras</h2>
+    <p>Clique no botão para simular o “random sampling”:</p>
+    <button onclick="generateWord()">Sortear Palavra</button>
+    <div class="output" id="output"></div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    🔗 Leia o artigo original:
+    <a href="https://arxiv.org/abs/1706.03762" target="_blank">
+      Attention Is All You Need (Vaswani et al., 2017)
+    </a>
+  </p>
+</footer>
+
+<script>
+function generateWord() {
+  const words = [
+    { word: "why", prob: 0.41 },
+    { word: "what", prob: 0.20 },
+    { word: "who", prob: 0.16 },
+    { word: "how", prob: 0.14 },
+    { word: "where", prob: 0.10 }
+  ];
+
+  const r = Math.random();
+  let cumulative = 0;
+  let selected = "";
+
+  for (const w of words) {
+    cumulative += w.prob;
+    if (r <= cumulative) {
+      selected = w.word;
+      break;
+    }
+  }
+
+  document.getElementById("output").innerHTML = 
+    `Número aleatório: <span class='highlight'>${r.toFixed(2)}</span><br>` +
+    `Palavra sorteada: <span class='highlight'>${selected}</span>`;
+}
+</script>
+
+</body>
+</html>
