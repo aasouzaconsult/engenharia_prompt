@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transformer: Softmax, Temperatura e Random Sampling</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
   <style>
     :root {
-      --azul: #007bff;
+      --azul: #8f1818;
       --preto: #111;
       --cinza: #f8f9fa;
     }
@@ -31,11 +33,6 @@
       max-width: 1000px;
       margin: auto;
       padding: 2rem;
-    }
-
-    h1, h2 {
-      color: var(--azul);
-      text-align: center;
     }
 
     section {
@@ -75,7 +72,7 @@
     }
 
     button:hover {
-      background: #0056b3;
+      background: #01050a;
     }
 
     .output {
@@ -183,7 +180,6 @@
     <p>
       Cada token escolhido é realimentado no modelo, que calcula novos logits e reinicia o processo.
     </p>
-    <img src="A_flowchart_in_digital_illustration_format_depicts.png" alt="Fluxo do Transformer com Softmax, Temperatura e Random Sampling">
   </section>
 
   <section class="interactive">
@@ -199,6 +195,10 @@
     🔗 Leia o artigo original:
     <a href="https://arxiv.org/abs/1706.03762" target="_blank">
       Attention Is All You Need (Vaswani et al., 2017)
+    </a><br>
+    🔗 Download da planilha:
+    <a href="https://github.com/aasouzaconsult/engenharia_prompt/blob/main/Temperature.xlsx" target="_blank">
+      Temperature
     </a>
   </p>
 </footer>
